@@ -54,7 +54,7 @@ col.online=Version en ligne
 col.status=Statut
 col.scope=Portée
 col.path=Chemin d'installation
-col.path_ref=Référencé dans le PATH
+col.path_ref=Dans\nPATH
 
 status.not_installed=🔴 Non installé
 status.up_to_date=🟢 À jour

@@ -54,7 +54,7 @@ col.online=Online version
 col.status=Status
 col.scope=Scope
 col.path=Install path
-col.path_ref=In PATH
+col.path_ref=In\nPATH
 
 status.not_installed=🔴 Not installed
 status.up_to_date=🟢 Up to date

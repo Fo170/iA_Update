@@ -246,10 +246,12 @@ void MainWindow::create_central() {
     table_->sortByColumn(COL_NAME, Qt::AscendingOrder);
     table_->setWordWrap(true);
     table_->setTextElideMode(Qt::ElideNone);
-    table_->horizontalHeader()->setStretchLastSection(true);
+    table_->horizontalHeader()->setStretchLastSection(false);
     table_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     table_->horizontalHeader()->setMinimumSectionSize(40);
     table_->horizontalHeader()->setMaximumSectionSize(320);
+    // La colonne Chemin absorbe l'espace restant de la fenêtre
+    table_->horizontalHeader()->setSectionResizeMode(COL_PATH, QHeaderView::Stretch);
     // Hauteur des lignes adaptée au texte multiligne (retour à la ligne)
     table_->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -393,7 +395,7 @@ void MainWindow::populate_table() {
     table_->setColumnWidth(COL_STATUS, 150);
     table_->setColumnWidth(COL_SCOPE, 90);
     table_->setColumnWidth(COL_PATH, 300);
-    table_->setColumnWidth(COL_PATH_REF, 110);
+    table_->setColumnWidth(COL_PATH_REF, 70);
 
     apply_filter();
 }
