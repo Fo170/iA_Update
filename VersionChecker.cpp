@@ -189,7 +189,10 @@ void VersionChecker::checkAll(QList<AppItem>& items, int cacheAgeH) {
         request.setHeader(QNetworkRequest::UserAgentHeader,
             QStringLiteral(APP_NAME "/%1").arg(QStringLiteral(APP_VERSION)));
         request.setTransferTimeout(15000);
-        request.setRawHeader("Accept", "application/vnd.github+json");
+        // Le header Accept GitHub n'est valide que pour api.github.com ;
+        // envoyé ailleurs (registre npm, PyPI...) il provoque un 406.
+        if (type == "github")
+            request.setRawHeader("Accept", "application/vnd.github+json");
 
         // On stocke l'AppItem à mettre à jour dans les propriétés du reply
         pending_.append(&item);
