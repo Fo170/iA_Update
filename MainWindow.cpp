@@ -38,6 +38,9 @@
 #include <QFileInfo>
 #include <QFileIconProvider>
 #include <QStyle>
+#include <QTimer>
+#include <QtConcurrent>
+#include <QFutureWatcher>
 
 // Colonnes du tableau
 enum {
@@ -85,7 +88,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     retranslateUi();
     statusBar()->showMessage(langue_->get("status.ready"));
 
-    analyze_all();
+    // Analyse différée : la fenêtre s'affiche immédiatement, la détection
+    // se lance ensuite sans bloquer l'interface.
+    QTimer::singleShot(0, this, &MainWindow::analyze_all);
 }
 
 void MainWindow::create_menus() {
@@ -384,6 +389,8 @@ void MainWindow::analyze_all() {
         set_status_message(langue_->get("status.checking"));
         return;
     }
+    if (detect_watcher_ && detect_watcher_->isRunning())
+        return;
 
     // Chargement du manifeste
     apps_ = AppItem::loadManifest(apps_path_);
@@ -393,16 +400,29 @@ void MainWindow::analyze_all() {
         return;
     }
 
-    // Détection locale
+    // Détection locale en arrière-plan (parallèle, non bloquant)
     progress_bar_->setVisible(true);
-    progress_bar_->setRange(0, apps_.size());
+    progress_bar_->setRange(0, 100);
     progress_bar_->setValue(0);
     set_status_message(langue_->get("status.detecting"));
 
-    for (int i = 0; i < apps_.size(); ++i) {
-        detector_->detect(apps_[i]);
-        progress_bar_->setValue(i + 1);
-    }
+    AppDetector* det = detector_;
+    auto future = QtConcurrent::map(apps_, [det](AppItem& item) {
+        det->detect(item);
+    });
+
+    detect_watcher_ = new QFutureWatcher<void>(this);
+    connect(detect_watcher_, &QFutureWatcher<void>::finished,
+            this, &MainWindow::on_detection_done);
+    detect_watcher_->setFuture(future);
+}
+
+void MainWindow::on_detection_done() {
+    detect_watcher_->deleteLater();
+    detect_watcher_ = nullptr;
+
+    progress_bar_->setRange(0, apps_.size());
+    progress_bar_->setValue(apps_.size());
 
     // Remplissage des onglets par catégorie
     rebuild_tabs();

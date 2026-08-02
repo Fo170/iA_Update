@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QList>
+#include <QFutureWatcher>
 #include "AppItem.hpp"
 
 class QAction;
@@ -46,6 +47,7 @@ private slots:
     void filter_changed();
     void on_app_checked(const QString& appId);
     void on_all_checked();
+    void on_detection_done();
     void on_check_error(const QString& appId, const QString& error);
     void on_download_progress(const QString& appId, qint64 received, qint64 total);
     void on_download_finished(const QString& appId, bool success, const QString& filePath);
@@ -78,6 +80,7 @@ private:
     // Données
     QList<AppItem> apps_;
     QString apps_path_;
+    QFutureWatcher<void>* detect_watcher_ = nullptr;
 
     // UI
     QTableView* table_ = nullptr;

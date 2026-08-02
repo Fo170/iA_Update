@@ -18,6 +18,7 @@ Qt install: `C:/Qt/6.11.0/mingw_64`, MinGW: `C:/Qt/Tools/mingw1310_64`, CMake: `
 - `cmake` is NOT on PATH. Use the full path above.
 - **If `apps.json`, `lang/`, or `ico/` change, the build dir copy must be refreshed**: `cmake --build` re-runs the `file(COPY ...)` only on reconfigure. Re-copy manually: `Copy-Item -LiteralPath "<repo>\apps.json" -Destination "<repo>\windows\apps.json"`.
 - Deploy: `& "C:/Qt/6.11.0/mingw_64/bin/windeployqt.exe" --no-compiler-runtime --no-translations windows/iA_Update.exe`
+- **If new Qt modules are added to CMakeLists (e.g. `Concurrent`), `windeployqt` must be re-run** — otherwise the exe fails with an "entry point" error (missing DLL like `Qt6Concurrent.dll`).
 - Sanity check after build: launch `windows/iA_Update.exe`; it must stay alive and create `windows/application.ini`. Kill it with `Stop-Process`.
 
 ## Environment gotchas (Windows, PowerShell 5.1)

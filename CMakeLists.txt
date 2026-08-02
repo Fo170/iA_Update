@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Network Concurrent)
 
 file(COPY ico/app.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ico)
 file(COPY lang/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lang)
@@ -43,5 +43,5 @@ if(WIN32)
     target_sources(iA_Update PRIVATE ${RC_OUT})
 endif()
 
-target_link_libraries(iA_Update PRIVATE Qt6::Widgets Qt6::Network)
+target_link_libraries(iA_Update PRIVATE Qt6::Widgets Qt6::Network Qt6::Concurrent)
 target_include_directories(iA_Update PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

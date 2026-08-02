@@ -5,8 +5,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFile>
+#include <QDir>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QRegularExpression>
+#include <QCoreApplication>
 #include "AppConfig.hpp"
 
 VersionChecker::VersionChecker(QObject* parent)
@@ -14,10 +18,58 @@ VersionChecker::VersionChecker(QObject* parent)
     manager_ = new QNetworkAccessManager(this);
     connect(manager_, &QNetworkAccessManager::finished,
             this, &VersionChecker::onReplyFinished);
+    loadCache();
 }
 
 bool VersionChecker::isChecking() const {
     return checking_;
+}
+
+void VersionChecker::loadCache() {
+    QFile f(QCoreApplication::applicationDirPath() + "/cache_online.json");
+    if (!f.open(QIODevice::ReadOnly))
+        return;
+    QJsonParseError err;
+    QJsonDocument doc = QJsonDocument::fromJson(f.readAll(), &err);
+    f.close();
+    if (err.error != QJsonParseError::NoError || !doc.isObject())
+        return;
+    QJsonObject obj = doc.object();
+    for (auto it = obj.begin(); it != obj.end(); ++it) {
+        QJsonObject entry = it.value().toObject();
+        cacheVersion_[it.key()] = entry.value("version").toString();
+        cacheTime_[it.key()] = static_cast<qint64>(entry.value("ts").toDouble());
+    }
+}
+
+void VersionChecker::saveCache() const {
+    QJsonObject obj;
+    for (auto it = cacheVersion_.begin(); it != cacheVersion_.end(); ++it) {
+        QJsonObject entry;
+        entry["version"] = it.value();
+        entry["ts"] = static_cast<double>(cacheTime_.value(it.key()));
+        obj[it.key()] = entry;
+    }
+    QFile f(QCoreApplication::applicationDirPath() + "/cache_online.json");
+    if (f.open(QIODevice::WriteOnly)) {
+        f.write(QJsonDocument(obj).toJson(QJsonDocument::Indented));
+        f.close();
+    }
+}
+
+void VersionChecker::forceRefresh(QList<AppItem>& items) {
+    force_ = true;
+    checkAll(items, 0);
+    force_ = false;
+}
+
+QString VersionChecker::githubAtomUrl(const AppItem& item) {
+    if (item.online.value("type").toString() != "github")
+        return QString();
+    QString repo = item.online.value("repo").toString();
+    if (repo.isEmpty())
+        return QString();
+    return QStringLiteral("https://github.com/%1/releases.atom").arg(repo);
 }
 
 QUrl VersionChecker::buildUrl(const AppItem& item) const {
@@ -49,7 +101,12 @@ QString VersionChecker::parseVersion(const AppItem& item, const QByteArray& data
 
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(data, &err);
-    if (err.error != QJsonParseError::NoError || !doc.isObject())
+    if (err.error != QJsonParseError::NoError)
+        return QString();
+
+    // Les endpoints github /tags et endoflife renvoient un tableau JSON.
+    bool isArray = doc.isArray();
+    if (!isArray && !doc.isObject())
         return QString();
 
     QJsonObject obj = doc.object();
@@ -87,10 +144,13 @@ QString VersionChecker::parseVersion(const AppItem& item, const QByteArray& data
     return QString();
 }
 
-void VersionChecker::checkAll(QList<AppItem>& items) {
+void VersionChecker::checkAll(QList<AppItem>& items, int cacheAgeH) {
     if (checking_) return;
     checking_ = true;
     running_ = 0;
+
+    qint64 now = QDateTime::currentSecsSinceEpoch();
+    qint64 maxAge = static_cast<qint64>(cacheAgeH) * 3600;
 
     pending_.clear();
     for (auto& item : items) {
@@ -103,6 +163,17 @@ void VersionChecker::checkAll(QList<AppItem>& items) {
             // Pas de source en ligne : statut "inconnue en ligne" si installé
             item.online_checked = true;
             item.computeStatus();
+            continue;
+        }
+
+        // Cache : version connue et encore fraîche ?
+        bool cacheOk = cacheVersion_.contains(item.id) &&
+                       (force_ || (now - cacheTime_.value(item.id)) < maxAge);
+        if (cacheOk && !cacheVersion_.value(item.id).isEmpty()) {
+            item.online_version = cacheVersion_.value(item.id);
+            item.online_checked = true;
+            item.computeStatus();
+            emit appChecked(item.id);
             continue;
         }
 
@@ -149,27 +220,70 @@ void VersionChecker::onReplyFinished(QNetworkReply* reply) {
     }
 
     if (item) {
-        item->online_checked = true;
         if (reply->error() != QNetworkReply::NoError) {
-            item->online_error = true;
-            item->error_message = reply->errorString();
-            emit checkError(appId, reply->errorString());
+            // Fallback GitHub : si l'API est limitée (403), on retente via le
+            // flux atom (releases.atom) qui n'utilise pas le quota API.
+            if (item->online.value("type").toString() == "github" &&
+                !reply->property("retriedAtom").toBool()) {
+                QString atom = githubAtomUrl(*item);
+                if (!atom.isEmpty()) {
+                    QNetworkRequest req{QUrl(atom)};
+                    req.setHeader(QNetworkRequest::UserAgentHeader,
+                        QStringLiteral(APP_NAME "/%1").arg(QStringLiteral(APP_VERSION)));
+                    req.setTransferTimeout(15000);
+                    QNetworkReply* r2 = manager_->get(req);
+                    r2->setProperty("appId", item->id);
+                    r2->setProperty("retriedAtom", true);
+                    running_++;
+                    emit checkError(appId, reply->errorString());
+                } else {
+                    item->online_checked = true;
+                    item->online_error = true;
+                    item->error_message = reply->errorString();
+                    item->computeStatus();
+                    emit appChecked(appId);
+                }
+            } else {
+                item->online_checked = true;
+                item->online_error = true;
+                item->error_message = reply->errorString();
+                item->computeStatus();
+                emit appChecked(appId);
+            }
         } else {
-            QString version = parseVersion(*item, reply->readAll());
+            QString version;
+            if (reply->property("retriedAtom").toBool()) {
+                // Réponse atom XML : extraire la version du premier <title>
+                QByteArray data = reply->readAll();
+                QRegularExpression re("<title>\\s*v?([0-9]+\\.[0-9]+\\.[0-9]+[^<]*)</title>");
+                QRegularExpressionMatch m = re.match(QString::fromUtf8(data));
+                if (m.hasMatch()) {
+                    version = m.captured(1).trimmed();
+                    // retire le suffixe éventuel (ex: "v0.32.5" -> "0.32.5")
+                    if (version.startsWith('v', Qt::CaseInsensitive))
+                        version.remove(0, 1);
+                }
+            } else {
+                version = parseVersion(*item, reply->readAll());
+            }
             if (version.isEmpty()) {
                 item->online_error = true;
                 item->error_message = QStringLiteral("Version introuvable dans la réponse");
             } else {
                 item->online_version = version;
+                // Mise en cache pour éviter d'épuiser le quota d'API
+                cacheVersion_[appId] = version;
+                cacheTime_[appId] = QDateTime::currentSecsSinceEpoch();
             }
+            item->computeStatus();
+            emit appChecked(appId);
         }
-        item->computeStatus();
-        emit appChecked(appId);
     }
 
     if (running_ == 0) {
         pending_.clear();
         checking_ = false;
+        saveCache();
         emit allChecked();
     }
 }
