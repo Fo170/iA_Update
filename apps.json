@@ -1,5 +1,5 @@
 {
-    "$comment": "Manifeste des applications surveillées par iA_Update. Champs : id, name, category (outils/local/assistants/code), homepage, detect (cmd/locate/paths par OS), versionLocal (regex/registry/fromPath), online (github/npm/pypi/endoflife/none), downloadUrl, updateCommand (par OS), repairCommand (par OS).",
+    "$comment": "Manifeste des applications surveillées par iA_Update. Champs : id, name, category (build/outils/local/assistants/code), homepage, detect (cmd/locate/paths par OS), versionLocal (regex/registry/fromPath), online (github/npm/pypi/endoflife/none, useTags pour /tags github), downloadUrl, updateCommand (par OS), repairCommand (par OS).",
     "apps": [
         {
             "id": "python",
@@ -21,6 +21,94 @@
             "repairCommand": {
                 "windows": "winget install --id Python.Python.3.12 --force",
                 "linux": "sudo apt update && sudo apt install --reinstall python3"
+            }
+        },
+        {
+            "id": "cmake",
+            "name": "CMake",
+            "category": "build",
+            "homepage": "https://cmake.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["cmake", "--version"], "paths": ["C:/Qt/Tools/CMake_64/bin/cmake.exe"] },
+                "linux": { "cmd": ["cmake", "--version"] }
+            },
+            "versionLocal": { "regex": "cmake version (\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "Kitware/CMake" },
+            "downloadUrl": "https://cmake.org/download/",
+            "updateCommand": {
+                "windows": "winget upgrade --id Kitware.CMake",
+                "linux": "sudo apt update && sudo apt upgrade cmake"
+            },
+            "repairCommand": {
+                "windows": "winget install --id Kitware.CMake --force",
+                "linux": "sudo apt update && sudo apt install --reinstall cmake"
+            }
+        },
+        {
+            "id": "mingw",
+            "name": "MinGW (GCC)",
+            "category": "build",
+            "homepage": "https://www.mingw-w64.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["gcc", "--version"], "paths": ["C:/ProgramData/mingw64/mingw64/bin/gcc.exe", "C:/mingw64/bin/gcc.exe"] },
+                "linux": { "cmd": ["gcc", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "niXman/mingw-builds-binaries" },
+            "downloadUrl": "https://github.com/niXman/mingw-builds-binaries/releases",
+            "updateCommand": {
+                "windows": "winget upgrade --id BrechtSanders.WinLibs.POSIX.UCRT",
+                "linux": "sudo apt update && sudo apt upgrade gcc"
+            },
+            "repairCommand": {
+                "windows": "winget install --id BrechtSanders.WinLibs.POSIX.UCRT --force",
+                "linux": "sudo apt update && sudo apt install --reinstall gcc"
+            }
+        },
+        {
+            "id": "git",
+            "name": "Git",
+            "category": "build",
+            "homepage": "https://git-scm.com/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["git", "--version"] },
+                "linux": { "cmd": ["git", "--version"] }
+            },
+            "versionLocal": { "regex": "git version (\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "git-for-windows/git" },
+            "downloadUrl": "https://git-scm.com/downloads",
+            "updateCommand": {
+                "windows": "winget upgrade --id Git.Git",
+                "linux": "sudo apt update && sudo apt upgrade git"
+            },
+            "repairCommand": {
+                "windows": "winget install --id Git.Git --force",
+                "linux": "sudo apt update && sudo apt install --reinstall git"
+            }
+        },
+        {
+            "id": "ninja",
+            "name": "Ninja",
+            "category": "build",
+            "homepage": "https://ninja-build.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["ninja", "--version"], "paths": ["C:/Qt/Tools/Ninja/ninja.exe"] },
+                "linux": { "cmd": ["ninja", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "ninja-build/ninja" },
+            "downloadUrl": "https://ninja-build.org/",
+            "updateCommand": {
+                "windows": "winget upgrade --id Ninja-build.Ninja",
+                "linux": "sudo apt update && sudo apt upgrade ninja-build"
+            },
+            "repairCommand": {
+                "windows": "winget install --id Ninja-build.Ninja --force",
+                "linux": "sudo apt update && sudo apt install --reinstall ninja-build"
             }
         },
         {
@@ -197,6 +285,138 @@
             "repairCommand": {
                 "windows": "npm cache clean --force && npm install -g n8n",
                 "linux": "sudo npm cache clean --force && sudo npm install -g n8n"
+            }
+        },
+        {
+            "id": "winget",
+            "name": "Winget",
+            "category": "outils",
+            "homepage": "https://learn.microsoft.com/fr-fr/windows/package-manager/winget/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["winget", "--version"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "v?(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "microsoft/winget-cli" },
+            "downloadUrl": "https://github.com/microsoft/winget-cli/releases",
+            "updateCommand": {
+                "windows": "winget upgrade --id Microsoft.Winget",
+                "linux": "Non applicable sous Linux"
+            },
+            "repairCommand": {
+                "windows": "winget install --id Microsoft.Winget --force",
+                "linux": "Non applicable sous Linux"
+            }
+        },
+        {
+            "id": "pip",
+            "name": "pip",
+            "category": "outils",
+            "homepage": "https://pypi.org/project/pip/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["pip", "--version"] },
+                "linux": { "cmd": ["pip3", "--version"] }
+            },
+            "versionLocal": { "regex": "pip (\\d+\\.\\d+[.\\d]*)" },
+            "online": { "type": "pypi", "package": "pip" },
+            "downloadUrl": "https://pypi.org/project/pip/",
+            "updateCommand": {
+                "windows": "python -m pip install --upgrade pip",
+                "linux": "python3 -m pip install --upgrade pip"
+            },
+            "repairCommand": {
+                "windows": "python -m pip install --force-reinstall pip",
+                "linux": "python3 -m pip install --force-reinstall pip"
+            }
+        },
+        {
+            "id": "choco",
+            "name": "Chocolatey",
+            "category": "outils",
+            "homepage": "https://chocolatey.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["choco", "--version"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "chocolatey/choco" },
+            "downloadUrl": "https://chocolatey.org/install",
+            "updateCommand": {
+                "windows": "choco upgrade chocolatey -y",
+                "linux": "Non applicable sous Linux"
+            },
+            "repairCommand": {
+                "windows": "choco install chocolatey -y --force",
+                "linux": "Non applicable sous Linux"
+            }
+        },
+        {
+            "id": "scoop",
+            "name": "Scoop",
+            "category": "outils",
+            "homepage": "https://scoop.sh/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": ["scoop", "--version"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "scoop version v?(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "ScoopInstaller/Scoop" },
+            "downloadUrl": "https://scoop.sh/",
+            "updateCommand": {
+                "windows": "scoop update scoop",
+                "linux": "Non applicable sous Linux"
+            },
+            "repairCommand": {
+                "windows": "scoop uninstall scoop; scoop install scoop",
+                "linux": "Non applicable sous Linux"
+            }
+        },
+        {
+            "id": "dotnet",
+            "name": ".NET SDK",
+            "category": "outils",
+            "homepage": "https://dotnet.microsoft.com/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["dotnet", "--version"] },
+                "linux": { "cmd": ["dotnet", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "endoflife", "key": "dotnet" },
+            "downloadUrl": "https://dotnet.microsoft.com/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id Microsoft.DotNet.SDK.10",
+                "linux": "sudo apt update && sudo apt upgrade dotnet-sdk-10.0"
+            },
+            "repairCommand": {
+                "windows": "winget install --id Microsoft.DotNet.SDK.10 --force",
+                "linux": "sudo apt update && sudo apt install --reinstall dotnet-sdk-10.0"
+            }
+        },
+        {
+            "id": "rustup",
+            "name": "Rust / Cargo",
+            "category": "outils",
+            "homepage": "https://rustup.rs/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["cargo", "--version"] },
+                "linux": { "cmd": ["cargo", "--version"] }
+            },
+            "versionLocal": { "regex": "cargo (\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "rust-lang/rustup", "useTags": true },
+            "downloadUrl": "https://rustup.rs/",
+            "updateCommand": {
+                "windows": "rustup update stable",
+                "linux": "rustup update stable"
+            },
+            "repairCommand": {
+                "windows": "rustup self update; rustup update stable",
+                "linux": "rustup self update; rustup update stable"
             }
         },
         {

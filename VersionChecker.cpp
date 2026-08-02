@@ -27,6 +27,8 @@ QUrl VersionChecker::buildUrl(const AppItem& item) const {
     QString pkg = item.online.value("package").toString();
 
     if (type == "github") {
+        if (item.online.value("useTags").toBool())
+            return QUrl(QStringLiteral("https://api.github.com/repos/%1/tags").arg(repo));
         return QUrl(QStringLiteral("https://api.github.com/repos/%1/releases/latest").arg(repo));
     }
     if (type == "npm") {
@@ -55,6 +57,12 @@ QString VersionChecker::parseVersion(const AppItem& item, const QByteArray& data
     if (type == "github") {
         // tag_name: "v1.2.3" ou "1.2.3"
         QString tag = obj.value("tag_name").toString();
+        if (tag.isEmpty()) {
+            // Endpoint /tags : tableau d'objets [{name: "v1.2.3", ...}, ...]
+            QJsonArray arr = doc.array();
+            if (!arr.isEmpty())
+                tag = arr.first().toObject().value("name").toString();
+        }
         return tag.remove(0, 1); // retire le 'v' préfixe
     }
     if (type == "npm") {

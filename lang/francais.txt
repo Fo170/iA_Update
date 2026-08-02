@@ -30,6 +30,7 @@ filter.all=Tous
 filter.search=Rechercher...
 
 tab.all=Tous
+tab.build=🛠️ Outils de build
 tab.outils=🔧 Outils & Runtimes
 tab.local=🧠 Local — modèles
 tab.assistants=🤖 Assistants chat

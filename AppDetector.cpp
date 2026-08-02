@@ -273,6 +273,34 @@ void AppDetector::detect(AppItem& item) const {
             item.local_version = extractVersion(out, item.versionLocalRegex);
     }
 
+    // 3bis. Si le binaire trouvé est un fichier (pas un dossier), on tente
+    //      d'exécuter le fichier directement (utile hors PATH : cmake, ninja).
+    if (item.installed && item.local_version.isEmpty() && !cmds.isEmpty()) {
+        QString bin = item.install_path;
+        if (QFileInfo(bin).isDir()) {
+            // Le dossier peut être le bin : cherchons un binaire du même nom
+            QString prog = cmds.first().split(' ').value(0);
+            QStringList candidates;
+            candidates << bin + "/" + prog + ".exe"
+                       << bin + "/" + prog + ".cmd"
+                       << bin + "/" + prog + ".bat";
+            for (const QString& c : candidates) {
+                if (QFileInfo::exists(c)) {
+                    bin = c;
+                    break;
+                }
+            }
+        }
+        if (QFileInfo(bin).isFile()) {
+            QStringList runArgs = cmds.mid(1);
+            if (runArgs.isEmpty())
+                runArgs = {QStringLiteral("--version")};
+            QString out = runProgram(bin, runArgs);
+            if (!out.isEmpty())
+                item.local_version = extractVersion(out, item.versionLocalRegex);
+        }
+    }
+
     // 4. Fallback : version depuis le registre Windows
     if (item.installed && item.local_version.isEmpty() && !item.versionLocalRegistry.isEmpty())
         item.local_version = registryVersion(item.versionLocalRegistry);

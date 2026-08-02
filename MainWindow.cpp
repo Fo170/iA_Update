@@ -36,10 +36,13 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QFileIconProvider>
+#include <QStyle>
 
 // Colonnes du tableau
 enum {
-    COL_SELECT = 0,
+    COL_ICON = 0,
+    COL_SELECT,
     COL_NAME,
     COL_LOCAL,
     COL_ONLINE,
@@ -59,6 +62,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     checker_ = new VersionChecker(this);
     downloader_ = new Downloader(this);
     installer_ = new Installer(this);
+    icon_provider_ = new QFileIconProvider;
 
     // Chemin du manifeste apps.json (à côté de l'exécutable)
     apps_path_ = QCoreApplication::applicationDirPath() + "/apps.json";
@@ -215,6 +219,10 @@ void MainWindow::populate_table() {
     // Remplissage
     for (int i = 0; i < apps_.size(); ++i) {
         AppItem& app = apps_[i];
+        auto* icon = new QStandardItem;
+        icon->setEditable(false);
+        icon->setTextAlignment(Qt::AlignCenter);
+        model_->setItem(i, COL_ICON, icon);
         auto* ck = new QStandardItem;
         ck->setCheckable(true);
         ck->setEditable(false);
@@ -231,7 +239,7 @@ void MainWindow::populate_table() {
 
     // En-têtes
     QStringList headers;
-    headers << QString() << langue_->get("col.name") << langue_->get("col.local")
+    headers << QString() << QString() << langue_->get("col.name") << langue_->get("col.local")
             << langue_->get("col.online") << langue_->get("col.status")
             << langue_->get("col.scope") << langue_->get("col.path")
             << langue_->get("col.path_ref");
@@ -247,6 +255,28 @@ void MainWindow::update_row(int row) {
 
     QStandardItem* ck = model_->item(row, COL_SELECT);
     if (ck) ck->setCheckState(app.is_selected ? Qt::Checked : Qt::Unchecked);
+
+    // Icône de l'application (exe installé si possible)
+    if (auto* icon = model_->item(row, COL_ICON)) {
+        QIcon ic;
+        if (app.installed && !app.install_path.isEmpty()) {
+            QString exePath = app.install_path;
+            // Si le chemin est un dossier (cas PATH), on cherche un .exe dedans
+            if (QFileInfo(exePath).isDir()) {
+                QDir d(exePath);
+                QStringList exes = d.entryList({"*.exe"}, QDir::Files);
+                if (!exes.isEmpty())
+                    exePath = d.absoluteFilePath(exes.first());
+            }
+            ic = icon_provider_->icon(QFileInfo(exePath));
+            if (ic.isNull())
+                ic = style()->standardIcon(QStyle::SP_ComputerIcon);
+        } else {
+            ic = style()->standardIcon(QStyle::SP_FileDialogNewFolder);
+        }
+        icon->setIcon(ic);
+        icon->setSizeHint(QSize(22, 22));
+    }
 
     if (auto* name = model_->item(row, COL_NAME)) {
         name->setText(app.name);
@@ -334,7 +364,7 @@ void MainWindow::rebuild_tabs() {
 
     auto* allTab = new QWidget;
     tabs_->addTab(allTab, langue_->get("tab.all"));
-    QStringList cats = {"outils", "local", "assistants", "code"};
+    QStringList cats = {"build", "outils", "local", "assistants", "code"};
     int restore = 0;
     for (const QString& c : cats) {
         auto* page = new QWidget;

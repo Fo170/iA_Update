@@ -16,6 +16,7 @@ class QLineEdit;
 class QPushButton;
 class QCheckBox;
 class QTabWidget;
+class QFileIconProvider;
 class LangueManager;
 class AppDetector;
 class VersionChecker;
@@ -81,6 +82,7 @@ private:
     // UI
     QTableView* table_ = nullptr;
     QStandardItemModel* model_ = nullptr;
+    QFileIconProvider* icon_provider_ = nullptr;
     QLabel* status_label_ = nullptr;
     QProgressBar* progress_bar_ = nullptr;
     QComboBox* filter_status_ = nullptr;
