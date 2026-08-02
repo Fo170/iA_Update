@@ -42,8 +42,10 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QSortFilterProxyModel>
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <QScrollArea>
+#include <QFrame>
+#include <QGroupBox>
+#include <QFormLayout>
 
 // Colonnes du tableau
 enum {
@@ -278,16 +280,22 @@ void MainWindow::create_central() {
     status_label_ = new QLabel;
     statusBar()->addWidget(status_label_, 1);
 
-    // Onglet Réglages : tableau éditable des commandes d'installation
+    // Onglet Réglages : liste verticale de groupes, un par application
     auto* settings_widget = new QWidget;
     settings_widget_ = settings_widget;
     auto* sl = new QVBoxLayout(settings_widget);
-    settings_table_ = new QTableWidget;
-    settings_table_->setColumnCount(6);
-    settings_table_->setEditTriggers(QAbstractItemView::DoubleClicked |
-                                     QAbstractItemView::EditKeyPressed |
-                                     QAbstractItemView::SelectedClicked);
-    sl->addWidget(settings_table_, 1);
+    sl->setContentsMargins(4, 4, 4, 4);
+
+    settings_scroll_ = new QScrollArea;
+    settings_scroll_->setWidgetResizable(true);
+    settings_scroll_->setFrameShape(QFrame::NoFrame);
+    settings_list_ = new QWidget;
+    auto* list_layout = new QVBoxLayout(settings_list_);
+    list_layout->setContentsMargins(4, 4, 4, 4);
+    list_layout->setSpacing(8);
+    settings_list_->setLayout(list_layout);
+    settings_scroll_->setWidget(settings_list_);
+    sl->addWidget(settings_scroll_, 1);
 
     auto* sbar = new QHBoxLayout;
     btn_save_settings_ = new QPushButton;
@@ -712,52 +720,86 @@ void MainWindow::download_selected(const QList<AppItem*>& selected) {
 }
 
 void MainWindow::populate_settings_tab() {
-    if (!settings_table_)
+    if (!settings_list_)
         return;
-    settings_table_->setRowCount(apps_.size());
 
-    QStringList headers;
-    headers << langue_->get("col.name")
-            << langue_->get("settings.update_windows")
-            << langue_->get("settings.update_linux")
-            << langue_->get("settings.repair_windows")
-            << langue_->get("settings.repair_linux")
-            << langue_->get("settings.download");
-    settings_table_->setHorizontalHeaderLabels(headers);
+    // Vidage de la liste précédente
+    QLayout* old = settings_list_->layout();
+    if (old) {
+        while (QLayoutItem* it = old->takeAt(0)) {
+            if (QWidget* w = it->widget())
+                w->deleteLater();
+            delete it;
+        }
+    }
+    settings_edits_.clear();
+
+    auto* list_layout = settings_list_->layout();
+    if (!list_layout) {
+        list_layout = new QVBoxLayout(settings_list_);
+        list_layout->setContentsMargins(4, 4, 4, 4);
+        list_layout->setSpacing(8);
+        settings_list_->setLayout(list_layout);
+    }
 
     for (int r = 0; r < apps_.size(); ++r) {
         const AppItem& app = apps_[r];
-        settings_table_->setItem(r, 0, new QTableWidgetItem(app.name));
-        settings_table_->item(r, 0)->setFlags(Qt::ItemIsEnabled);
-        settings_table_->setItem(r, 1, new QTableWidgetItem(
-            app.updateCommand.value("windows").toString()));
-        settings_table_->setItem(r, 2, new QTableWidgetItem(
-            app.updateCommand.value("linux").toString()));
-        settings_table_->setItem(r, 3, new QTableWidgetItem(
-            app.repairCommand.value("windows").toString()));
-        settings_table_->setItem(r, 4, new QTableWidgetItem(
-            app.repairCommand.value("linux").toString()));
-        settings_table_->setItem(r, 5, new QTableWidgetItem(app.downloadUrl));
+
+        auto* box = new QGroupBox(app.name);
+        box->setObjectName(QStringLiteral("group_") + app.id);
+        auto* form = new QFormLayout(box);
+        form->setLabelAlignment(Qt::AlignRight);
+        form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+        QList<QLineEdit*> edits;
+        QLineEdit* e1 = new QLineEdit(app.updateCommand.value("windows").toString());
+        QLineEdit* e2 = new QLineEdit(app.updateCommand.value("linux").toString());
+        QLineEdit* e3 = new QLineEdit(app.repairCommand.value("windows").toString());
+        QLineEdit* e4 = new QLineEdit(app.repairCommand.value("linux").toString());
+        QLineEdit* e5 = new QLineEdit(app.downloadUrl);
+        edits << e1 << e2 << e3 << e4 << e5;
+
+        // Rangées : une ligne par paramètre
+        form->addRow(langue_->get("settings.update_windows"), e1);
+        form->addRow(langue_->get("settings.update_linux"), e2);
+        form->addRow(langue_->get("settings.repair_windows"), e3);
+        form->addRow(langue_->get("settings.repair_linux"), e4);
+        form->addRow(langue_->get("settings.download"), e5);
+
+        box->setLayout(form);
+        list_layout->addWidget(box);
+
+        // Séparateur visuel entre deux applications
+        if (r < apps_.size() - 1) {
+            auto* sep = new QFrame;
+            sep->setFrameShape(QFrame::HLine);
+            sep->setFrameShadow(QFrame::Sunken);
+            sep->setStyleSheet("color: #888;");
+            list_layout->addWidget(sep);
+        }
+
+        settings_edits_.append(edits);
     }
-    settings_table_->horizontalHeader()->setStretchLastSection(true);
-    settings_table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    settings_table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+
+    auto* vlist = qobject_cast<QVBoxLayout*>(list_layout);
+    if (vlist)
+        vlist->addStretch(1);
 }
 
 void MainWindow::save_commands_ini() {
-    if (!settings_table_ || apps_.isEmpty())
+    if (apps_.isEmpty())
         return;
-    // Récupère les valeurs éditables depuis le tableau
-    for (int r = 0; r < apps_.size() && r < settings_table_->rowCount(); ++r) {
+    // Récupère les valeurs éditables depuis la liste de groupes
+    for (int r = 0; r < apps_.size() && r < settings_edits_.size(); ++r) {
+        const QList<QLineEdit*>& edits = settings_edits_[r];
+        if (edits.size() < 5)
+            continue;
         auto& app = apps_[r];
-        if (auto* it = settings_table_->item(r, 1))
-            app.updateCommand["windows"] = it->text();
-        if (auto* it = settings_table_->item(r, 2))
-            app.updateCommand["linux"] = it->text();
-        if (auto* it = settings_table_->item(r, 3))
-            app.repairCommand["windows"] = it->text();
-        if (auto* it = settings_table_->item(r, 4))
-            app.repairCommand["linux"] = it->text();
+        app.updateCommand["windows"] = edits[0]->text();
+        app.updateCommand["linux"] = edits[1]->text();
+        app.repairCommand["windows"] = edits[2]->text();
+        app.repairCommand["linux"] = edits[3]->text();
+        app.downloadUrl = edits[4]->text();
     }
     AppItem::writeIniFile(apps_,
         QCoreApplication::applicationDirPath() + "/commandes.ini");
@@ -927,13 +969,27 @@ void MainWindow::retranslateUi() {
         btn_save_settings_->setText(langue_->get("settings.save"));
         btn_reset_settings_->setText(langue_->get("settings.reset"));
     }
-    if (settings_table_ && settings_table_->columnCount() == 6) {
-        settings_table_->setHorizontalHeaderItem(0, new QTableWidgetItem(langue_->get("col.name")));
-        settings_table_->setHorizontalHeaderItem(1, new QTableWidgetItem(langue_->get("settings.update_windows")));
-        settings_table_->setHorizontalHeaderItem(2, new QTableWidgetItem(langue_->get("settings.update_linux")));
-        settings_table_->setHorizontalHeaderItem(3, new QTableWidgetItem(langue_->get("settings.repair_windows")));
-        settings_table_->setHorizontalHeaderItem(4, new QTableWidgetItem(langue_->get("settings.repair_linux")));
-        settings_table_->setHorizontalHeaderItem(5, new QTableWidgetItem(langue_->get("settings.download")));
+    // Re-traduction des labels des groupes de réglages
+    if (settings_list_) {
+        const QStringList labelKeys = {
+            QStringLiteral("settings.update_windows"),
+            QStringLiteral("settings.update_linux"),
+            QStringLiteral("settings.repair_windows"),
+            QStringLiteral("settings.repair_linux"),
+            QStringLiteral("settings.download")
+        };
+        const auto boxes = settings_list_->findChildren<QGroupBox*>();
+        for (QGroupBox* box : boxes) {
+            if (auto* form = qobject_cast<QFormLayout*>(box->layout())) {
+                for (int i = 0; i < form->rowCount(); ++i) {
+                    QLayoutItem* li = form->itemAt(i, QFormLayout::LabelRole);
+                    if (li && i < labelKeys.size()) {
+                        if (auto* lbl = qobject_cast<QLabel*>(li->widget()))
+                            lbl->setText(langue_->get(labelKeys.at(i)));
+                    }
+                }
+            }
+        }
     }
 
     // En-têtes si le modèle existe
