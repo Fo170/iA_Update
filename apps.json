@@ -8,11 +8,35 @@
             "homepage": "https://www.python.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["py", "--version"], "paths": ["C:/Python*", "C:/Program Files/Python*", "%LOCALAPPDATA%/Programs/Python/Python*/python.exe"] },
-                "linux": { "cmd": ["python3", "--version"], "paths": ["/usr/bin/python3", "/usr/local/bin/python3"] }
+                "windows": {
+                    "cmd": [
+                        "py",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/Python*",
+                        "C:/Program Files/Python*",
+                        "%LOCALAPPDATA%/Programs/Python/Python*/python.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "python3",
+                        "--version"
+                    ],
+                    "paths": [
+                        "/usr/bin/python3",
+                        "/usr/local/bin/python3"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "endoflife", "key": "python" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "endoflife",
+                "key": "python"
+            },
             "downloadUrl": "https://www.python.org/downloads/",
             "updateCommand": {
                 "windows": "winget upgrade --id Python.Python.3.12",
@@ -30,11 +54,29 @@
             "homepage": "https://cmake.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["cmake", "--version"], "paths": ["C:/Qt/Tools/CMake_64/bin/cmake.exe"] },
-                "linux": { "cmd": ["cmake", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "cmake",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/Qt/Tools/CMake_64/bin/cmake.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "cmake",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "cmake version (\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "Kitware/CMake" },
+            "versionLocal": {
+                "regex": "cmake version (\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "Kitware/CMake"
+            },
             "downloadUrl": "https://cmake.org/download/",
             "updateCommand": {
                 "windows": "winget upgrade --id Kitware.CMake",
@@ -52,11 +94,30 @@
             "homepage": "https://www.mingw-w64.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["gcc", "--version"], "paths": ["C:/ProgramData/mingw64/mingw64/bin/gcc.exe", "C:/mingw64/bin/gcc.exe"] },
-                "linux": { "cmd": ["gcc", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "gcc",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/ProgramData/mingw64/mingw64/bin/gcc.exe",
+                        "C:/mingw64/bin/gcc.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "gcc",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "niXman/mingw-builds-binaries" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "niXman/mingw-builds-binaries"
+            },
             "downloadUrl": "https://github.com/niXman/mingw-builds-binaries/releases",
             "updateCommand": {
                 "windows": "winget upgrade --id BrechtSanders.WinLibs.POSIX.UCRT",
@@ -74,11 +135,26 @@
             "homepage": "https://git-scm.com/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["git", "--version"] },
-                "linux": { "cmd": ["git", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "git",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "git",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "git version (\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "git-for-windows/git" },
+            "versionLocal": {
+                "regex": "git version (\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "git-for-windows/git"
+            },
             "downloadUrl": "https://git-scm.com/downloads",
             "updateCommand": {
                 "windows": "winget upgrade --id Git.Git",
@@ -96,11 +172,29 @@
             "homepage": "https://ninja-build.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["ninja", "--version"], "paths": ["C:/Qt/Tools/Ninja/ninja.exe"] },
-                "linux": { "cmd": ["ninja", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "ninja",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/Qt/Tools/Ninja/ninja.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "ninja",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "ninja-build/ninja" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "ninja-build/ninja"
+            },
             "downloadUrl": "https://ninja-build.org/",
             "updateCommand": {
                 "windows": "winget upgrade --id Ninja-build.Ninja",
@@ -118,11 +212,26 @@
             "homepage": "https://nodejs.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["node", "--version"] },
-                "linux": { "cmd": ["node", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "node",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "node",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "v?(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "endoflife", "key": "nodejs" },
+            "versionLocal": {
+                "regex": "v?(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "endoflife",
+                "key": "nodejs"
+            },
             "downloadUrl": "https://nodejs.org/en/download",
             "updateCommand": {
                 "windows": "winget upgrade --id OpenJS.NodeJS.LTS",
@@ -140,11 +249,26 @@
             "homepage": "https://www.npmjs.com/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["npm", "--version"] },
-                "linux": { "cmd": ["npm", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "npm",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "npm",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "npm" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "npm"
+            },
             "downloadUrl": "https://www.npmjs.com/",
             "updateCommand": {
                 "windows": "npm install -g npm@latest",
@@ -162,18 +286,36 @@
             "homepage": "https://www.qt.io/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["qmake", "--version"], "paths": ["C:/Qt/*"] },
-                "linux": { "cmd": ["qmake", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "qmake",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/Qt/*"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "qmake",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "Qt version (\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "endoflife", "key": "qt" },
+            "versionLocal": {
+                "regex": "Qt version (\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "endoflife",
+                "key": "qt"
+            },
             "downloadUrl": "https://www.qt.io/download",
             "updateCommand": {
-                "windows": "winget upgrade --id QtProject.Qt",
+                "windows": "Télécharger depuis https://www.qt.io/download",
                 "linux": "sudo apt update && sudo apt upgrade qt6-base-dev"
             },
             "repairCommand": {
-                "windows": "winget install --id QtProject.Qt --force",
+                "windows": "Télécharger depuis https://www.qt.io/download",
                 "linux": "sudo apt update && sudo apt install --reinstall qt6-base-dev"
             }
         },
@@ -184,11 +326,32 @@
             "homepage": "https://www.anaconda.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": ["conda", "--version"], "paths": ["C:/ProgramData/Anaconda3/Scripts/conda.exe", "C:/ProgramData/Anaconda3/condabin/conda.bat", "%USERPROFILE%/anaconda3/Scripts/conda.exe", "%LOCALAPPDATA%/anaconda3/Scripts/conda.exe"] },
-                "linux": { "cmd": ["conda", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "conda",
+                        "--version"
+                    ],
+                    "paths": [
+                        "C:/ProgramData/Anaconda3/Scripts/conda.exe",
+                        "C:/ProgramData/Anaconda3/condabin/conda.bat",
+                        "%USERPROFILE%/anaconda3/Scripts/conda.exe",
+                        "%LOCALAPPDATA%/anaconda3/Scripts/conda.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "conda",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "conda/conda" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "conda/conda"
+            },
             "downloadUrl": "https://www.anaconda.com/download",
             "updateCommand": {
                 "windows": "conda update -n base -c defaults conda",
@@ -206,18 +369,33 @@
             "homepage": "https://ghostwriter.kde.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": [], "paths": ["C:/ghostwriter_*/ghostwriter.exe", "C:/Program Files/Ghostwriter/ghostwriter.exe"] },
-                "linux": { "cmd": ["ghostwriter"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "C:/ghostwriter_*/ghostwriter.exe",
+                        "C:/Program Files/Ghostwriter/ghostwriter.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "ghostwriter"
+                    ]
+                }
             },
-            "versionLocal": { "fromPath": "ghostwriter_(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "wereturtle/ghostwriter" },
+            "versionLocal": {
+                "fromPath": "ghostwriter_(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "wereturtle/ghostwriter"
+            },
             "downloadUrl": "https://ghostwriter.kde.org/fr/download/",
             "updateCommand": {
-                "windows": "winget upgrade --id Ghostwriter.Ghostwriter",
+                "windows": "winget upgrade --id KDE.ghostwriter",
                 "linux": "sudo apt update && sudo apt upgrade ghostwriter"
             },
             "repairCommand": {
-                "windows": "winget install --id Ghostwriter.Ghostwriter --force",
+                "windows": "winget install --id KDE.ghostwriter --force",
                 "linux": "sudo apt update && sudo apt install --reinstall ghostwriter"
             }
         },
@@ -228,11 +406,27 @@
             "homepage": "https://obsidian.md/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["C:/Program Files/Obsidian/Obsidian.exe", "%LOCALAPPDATA%/Obsidian/Obsidian.exe", "%APPDATA%/Obsidian/Obsidian.exe"] },
-                "linux": { "cmd": ["obsidian"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "C:/Program Files/Obsidian/Obsidian.exe",
+                        "%LOCALAPPDATA%/Obsidian/Obsidian.exe",
+                        "%APPDATA%/Obsidian/Obsidian.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "obsidian"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Obsidian" },
-            "online": { "type": "github", "repo": "obsidianmd/obsidian-releases" },
+            "versionLocal": {
+                "registry": "Obsidian"
+            },
+            "online": {
+                "type": "github",
+                "repo": "obsidianmd/obsidian-releases"
+            },
             "downloadUrl": "https://obsidian.md/download",
             "updateCommand": {
                 "windows": "winget upgrade --id Obsidian.Obsidian",
@@ -250,11 +444,26 @@
             "homepage": "https://nodered.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["node-red", "--version"] },
-                "linux": { "cmd": ["node-red", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "node-red",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "node-red",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "node-red" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "node-red"
+            },
             "downloadUrl": "https://www.npmjs.com/package/node-red",
             "updateCommand": {
                 "windows": "npm install -g node-red",
@@ -272,11 +481,26 @@
             "homepage": "https://n8n.io/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["n8n", "--version"] },
-                "linux": { "cmd": ["n8n", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "n8n",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "n8n",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "n8n" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "n8n"
+            },
             "downloadUrl": "https://www.npmjs.com/package/n8n",
             "updateCommand": {
                 "windows": "npm install -g n8n",
@@ -294,18 +518,30 @@
             "homepage": "https://learn.microsoft.com/fr-fr/windows/package-manager/winget/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["winget", "--version"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [
+                        "winget",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "regex": "v?(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "microsoft/winget-cli" },
+            "versionLocal": {
+                "regex": "v?(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "microsoft/winget-cli"
+            },
             "downloadUrl": "https://github.com/microsoft/winget-cli/releases",
             "updateCommand": {
-                "windows": "winget upgrade --id Microsoft.Winget",
+                "windows": "Mise à jour automatique via Microsoft Store",
                 "linux": "Non applicable sous Linux"
             },
             "repairCommand": {
-                "windows": "winget install --id Microsoft.Winget --force",
+                "windows": "winget install --id Microsoft.DesktopAppInstaller --force",
                 "linux": "Non applicable sous Linux"
             }
         },
@@ -316,11 +552,26 @@
             "homepage": "https://pypi.org/project/pip/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["pip", "--version"] },
-                "linux": { "cmd": ["pip3", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "pip",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "pip3",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "pip (\\d+\\.\\d+[.\\d]*)" },
-            "online": { "type": "pypi", "package": "pip" },
+            "versionLocal": {
+                "regex": "pip (\\d+\\.\\d+[.\\d]*)"
+            },
+            "online": {
+                "type": "pypi",
+                "package": "pip"
+            },
             "downloadUrl": "https://pypi.org/project/pip/",
             "updateCommand": {
                 "windows": "python -m pip install --upgrade pip",
@@ -338,11 +589,23 @@
             "homepage": "https://chocolatey.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["choco", "--version"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [
+                        "choco",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "chocolatey/choco" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "chocolatey/choco"
+            },
             "downloadUrl": "https://chocolatey.org/install",
             "updateCommand": {
                 "windows": "choco upgrade chocolatey -y",
@@ -360,11 +623,23 @@
             "homepage": "https://scoop.sh/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": ["scoop", "--version"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [
+                        "scoop",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "regex": "scoop version v?(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "ScoopInstaller/Scoop" },
+            "versionLocal": {
+                "regex": "scoop version v?(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "ScoopInstaller/Scoop"
+            },
             "downloadUrl": "https://scoop.sh/",
             "updateCommand": {
                 "windows": "scoop update scoop",
@@ -382,11 +657,26 @@
             "homepage": "https://dotnet.microsoft.com/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["dotnet", "--version"] },
-                "linux": { "cmd": ["dotnet", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "dotnet",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "dotnet",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "endoflife", "key": "dotnet" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "endoflife",
+                "key": "dotnet"
+            },
             "downloadUrl": "https://dotnet.microsoft.com/download",
             "updateCommand": {
                 "windows": "winget upgrade --id Microsoft.DotNet.SDK.10",
@@ -404,11 +694,27 @@
             "homepage": "https://rustup.rs/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["cargo", "--version"] },
-                "linux": { "cmd": ["cargo", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "cargo",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "cargo",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "cargo (\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "rust-lang/rustup", "useTags": true },
+            "versionLocal": {
+                "regex": "cargo (\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "rust-lang/rustup",
+                "useTags": true
+            },
             "downloadUrl": "https://rustup.rs/",
             "updateCommand": {
                 "windows": "rustup update stable",
@@ -426,11 +732,29 @@
             "homepage": "https://ollama.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": ["ollama", "--version"], "paths": ["%LOCALAPPDATA%/Programs/Ollama/ollama app.exe"] },
-                "linux": { "cmd": ["ollama", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "ollama",
+                        "--version"
+                    ],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Ollama/ollama app.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "ollama",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "version is (\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "ollama/ollama" },
+            "versionLocal": {
+                "regex": "version is (\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "ollama/ollama"
+            },
             "downloadUrl": "https://ollama.com/download",
             "updateCommand": {
                 "windows": "winget upgrade --id Ollama.Ollama",
@@ -448,11 +772,24 @@
             "homepage": "https://lmstudio.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/LM Studio/LM Studio.exe"] },
-                "linux": { "cmd": ["lmstudio"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/LM Studio/LM Studio.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "lmstudio"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "LM Studio" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "LM Studio"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://lmstudio.ai/",
             "updateCommand": {
                 "windows": "winget upgrade --id ElementLabs.LMStudio",
@@ -470,11 +807,26 @@
             "homepage": "https://anythingllm.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/AnythingLLM/AnythingLLM.exe", "%APPDATA%/AnythingLLM"] },
-                "linux": { "cmd": ["anythingllm"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/AnythingLLM/AnythingLLM.exe",
+                        "%APPDATA%/AnythingLLM"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "anythingllm"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "AnythingLLM" },
-            "online": { "type": "github", "repo": "Mintplex-Labs/anything-llm" },
+            "versionLocal": {
+                "registry": "AnythingLLM"
+            },
+            "online": {
+                "type": "github",
+                "repo": "Mintplex-Labs/anything-llm"
+            },
             "downloadUrl": "https://anythingllm.com/desktop",
             "updateCommand": {
                 "windows": "winget upgrade --id MintplexLabs.AnythingLLM",
@@ -492,18 +844,33 @@
             "homepage": "https://jan.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/jan/jan.exe", "%LOCALAPPDATA%/Programs/@janhq/jan-desktop*/jan.exe"] },
-                "linux": { "cmd": ["jan"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/jan/jan.exe",
+                        "%LOCALAPPDATA%/Programs/@janhq/jan-desktop*/jan.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "jan"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Jan" },
-            "online": { "type": "github", "repo": "janhq/jan" },
+            "versionLocal": {
+                "registry": "Jan"
+            },
+            "online": {
+                "type": "github",
+                "repo": "janhq/jan"
+            },
             "downloadUrl": "https://jan.ai/",
             "updateCommand": {
-                "windows": "winget upgrade --id Jan.ai.Jan",
+                "windows": "winget upgrade --id Jan.Jan",
                 "linux": "Télécharger depuis https://jan.ai/"
             },
             "repairCommand": {
-                "windows": "winget install --id Jan.ai.Jan --force",
+                "windows": "winget install --id Jan.Jan --force",
                 "linux": "Télécharger depuis https://jan.ai/"
             }
         },
@@ -514,11 +881,25 @@
             "homepage": "https://gpt4all.io/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/gpt4all/gpt4all.exe"] },
-                "linux": { "cmd": ["gpt4all"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/gpt4all/gpt4all.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "gpt4all"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "GPT4All" },
-            "online": { "type": "github", "repo": "nomic-ai/gpt4all" },
+            "versionLocal": {
+                "registry": "GPT4All"
+            },
+            "online": {
+                "type": "github",
+                "repo": "nomic-ai/gpt4all"
+            },
             "downloadUrl": "https://gpt4all.io/",
             "updateCommand": {
                 "windows": "winget upgrade --id nomic.gpt4all",
@@ -536,11 +917,25 @@
             "homepage": "https://chatboxai.app/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/chatbox/chatbox.exe"] },
-                "linux": { "cmd": ["chatbox"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/chatbox/chatbox.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "chatbox"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Chatbox" },
-            "online": { "type": "github", "repo": "Bin-Huang/chatbox" },
+            "versionLocal": {
+                "registry": "Chatbox"
+            },
+            "online": {
+                "type": "github",
+                "repo": "Bin-Huang/chatbox"
+            },
             "downloadUrl": "https://chatboxai.app/",
             "updateCommand": {
                 "windows": "winget upgrade --id Bin-Huang.Chatbox",
@@ -558,18 +953,32 @@
             "homepage": "https://cherry-ai.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Cherry Studio/Cherry Studio.exe"] },
-                "linux": { "cmd": ["cherry-studio"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Cherry Studio/Cherry Studio.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "cherry-studio"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Cherry Studio" },
-            "online": { "type": "github", "repo": "CherryHQ/cherry-studio" },
+            "versionLocal": {
+                "registry": "Cherry Studio"
+            },
+            "online": {
+                "type": "github",
+                "repo": "CherryHQ/cherry-studio"
+            },
             "downloadUrl": "https://cherry-ai.com/",
             "updateCommand": {
-                "windows": "winget upgrade --id CherryHQ.CherryStudio",
+                "windows": "winget upgrade --id kangfenmao.CherryStudio",
                 "linux": "Télécharger depuis https://cherry-ai.com/"
             },
             "repairCommand": {
-                "windows": "winget install --id CherryHQ.CherryStudio --force",
+                "windows": "winget install --id kangfenmao.CherryStudio --force",
                 "linux": "Télécharger depuis https://cherry-ai.com/"
             }
         },
@@ -580,11 +989,22 @@
             "homepage": "https://msty.app/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Msty/Msty.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Msty/Msty.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Msty" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Msty"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://msty.app/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://msty.app/",
@@ -602,11 +1022,24 @@
             "homepage": "https://www.comfy.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%USERPROFILE%/ComfyUI", "C:/ComfyUI"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%USERPROFILE%/ComfyUI",
+                        "C:/ComfyUI"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "fromPath": "" },
-            "online": { "type": "github", "repo": "comfyanonymous/ComfyUI" },
+            "versionLocal": {
+                "fromPath": ""
+            },
+            "online": {
+                "type": "github",
+                "repo": "comfyanonymous/ComfyUI"
+            },
             "downloadUrl": "https://www.comfy.org/download",
             "updateCommand": {
                 "windows": "cd %USERPROFILE%\\ComfyUI && git pull",
@@ -624,11 +1057,24 @@
             "homepage": "https://kimi.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/kimi-desktop/Kimi.exe", "%LOCALAPPDATA%/Programs/Kimi/Kimi.exe", "%APPDATA%/Kimi"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/kimi-desktop/Kimi.exe",
+                        "%LOCALAPPDATA%/Programs/Kimi/Kimi.exe",
+                        "%APPDATA%/Kimi"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Kimi" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Kimi"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://kimi.com/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://kimi.com/",
@@ -646,11 +1092,23 @@
             "homepage": "https://www.perplexity.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Perplexity/Perplexity.exe", "%APPDATA%/Perplexity"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Perplexity/Perplexity.exe",
+                        "%APPDATA%/Perplexity"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Perplexity" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Perplexity"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://www.perplexity.ai/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://www.perplexity.ai/",
@@ -668,11 +1126,22 @@
             "homepage": "https://chatgpt.com/download",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/ChatGPT/ChatGPT.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/ChatGPT/ChatGPT.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "ChatGPT" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "ChatGPT"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://chatgpt.com/download",
             "updateCommand": {
                 "windows": "winget upgrade --id OpenAI.ChatGPT",
@@ -690,11 +1159,22 @@
             "homepage": "https://claude.com/download",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/claude-desktop/Claude Desktop.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/claude-desktop/Claude Desktop.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Claude" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Claude"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://claude.com/download",
             "updateCommand": {
                 "windows": "winget upgrade --id Anthropic.Claude",
@@ -712,11 +1192,23 @@
             "homepage": "https://chat.mistral.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/LeChat/LeChat.exe", "%LOCALAPPDATA%/Programs/Le Chat/Le Chat.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/LeChat/LeChat.exe",
+                        "%LOCALAPPDATA%/Programs/Le Chat/Le Chat.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Le Chat" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Le Chat"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://chat.mistral.ai/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://chat.mistral.ai/",
@@ -734,11 +1226,22 @@
             "homepage": "https://grok.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Grok/Grok.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Grok/Grok.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Grok" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Grok"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://grok.com/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://grok.com/",
@@ -756,11 +1259,22 @@
             "homepage": "https://gemini.google.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Gemini/Gemini.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Gemini/Gemini.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Gemini" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Gemini"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://gemini.google.com/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://gemini.google.com/",
@@ -778,11 +1292,22 @@
             "homepage": "https://pi.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Pi/Pi.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Pi/Pi.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Pi" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Pi"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://pi.ai/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://pi.ai/",
@@ -800,11 +1325,22 @@
             "homepage": "https://qwen.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Qwen/Qwen.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Qwen/Qwen.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Qwen" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Qwen"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://qwen.ai/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://qwen.ai/",
@@ -822,11 +1358,25 @@
             "homepage": "https://antigravity.google/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["antigravity", "--version"] },
-                "linux": { "cmd": ["antigravity", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "antigravity",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "antigravity",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://antigravity.google/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://antigravity.google/",
@@ -844,11 +1394,30 @@
             "homepage": "https://code.visualstudio.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": ["code", "--version"], "paths": ["%LOCALAPPDATA%/Programs/Microsoft VS Code/Code.exe", "C:/Program Files/Microsoft VS Code/Code.exe"] },
-                "linux": { "cmd": ["code", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "code",
+                        "--version"
+                    ],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Microsoft VS Code/Code.exe",
+                        "C:/Program Files/Microsoft VS Code/Code.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "code",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "microsoft/vscode" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "microsoft/vscode"
+            },
             "downloadUrl": "https://code.visualstudio.com/download",
             "updateCommand": {
                 "windows": "winget upgrade --id Microsoft.VisualStudioCode",
@@ -866,11 +1435,26 @@
             "homepage": "https://www.spyder-ide.org/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["spyder", "--version"] },
-                "linux": { "cmd": ["spyder", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "spyder",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "spyder",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "pypi", "package": "spyder" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "pypi",
+                "package": "spyder"
+            },
             "downloadUrl": "https://www.spyder-ide.org/",
             "updateCommand": {
                 "windows": "pip install -U spyder",
@@ -888,18 +1472,33 @@
             "homepage": "https://zed.dev/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Zed/Zed.exe", "%LOCALAPPDATA%/Zed/zed.exe"] },
-                "linux": { "cmd": ["zed"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Zed/Zed.exe",
+                        "%LOCALAPPDATA%/Zed/zed.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "zed"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Zed" },
-            "online": { "type": "github", "repo": "zed-industries/zed" },
+            "versionLocal": {
+                "registry": "Zed"
+            },
+            "online": {
+                "type": "github",
+                "repo": "zed-industries/zed"
+            },
             "downloadUrl": "https://zed.dev/download",
             "updateCommand": {
-                "windows": "winget upgrade --id ZedIndustry.Zed",
+                "windows": "winget upgrade --id ZedIndustries.Zed",
                 "linux": "curl -fsSL https://zed.dev/install.sh | sh"
             },
             "repairCommand": {
-                "windows": "winget install --id ZedIndustry.Zed --force",
+                "windows": "winget install --id ZedIndustries.Zed --force",
                 "linux": "curl -fsSL https://zed.dev/install.sh | sh"
             }
         },
@@ -910,11 +1509,24 @@
             "homepage": "https://cursor.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/cursor/Cursor.exe"] },
-                "linux": { "cmd": ["cursor"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/cursor/Cursor.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "cursor"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Cursor" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Cursor"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://cursor.com/",
             "updateCommand": {
                 "windows": "winget upgrade --id Anysphere.Cursor",
@@ -932,11 +1544,24 @@
             "homepage": "https://windsurf.com/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Windsurf/Windsurf.exe"] },
-                "linux": { "cmd": ["windsurf"] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Windsurf/Windsurf.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "windsurf"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "Windsurf" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Windsurf"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://windsurf.com/",
             "updateCommand": {
                 "windows": "winget upgrade --id Codeium.Windsurf",
@@ -954,11 +1579,22 @@
             "homepage": "https://www.trae.ai/",
             "scope_default": "user",
             "detect": {
-                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Trae/Trae.exe"] },
-                "linux": { "cmd": [] }
+                "windows": {
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/Programs/Trae/Trae.exe"
+                    ]
+                },
+                "linux": {
+                    "cmd": []
+                }
             },
-            "versionLocal": { "registry": "Trae" },
-            "online": { "type": "none" },
+            "versionLocal": {
+                "registry": "Trae"
+            },
+            "online": {
+                "type": "none"
+            },
             "downloadUrl": "https://www.trae.ai/",
             "updateCommand": {
                 "windows": "Télécharger depuis https://www.trae.ai/",
@@ -976,11 +1612,32 @@
             "homepage": "https://opencode.ai/",
             "scope_default": "global",
             "detect": {
-                "windows": { "locate": ["opencode"], "cmd": [], "paths": ["%LOCALAPPDATA%/OpenCode/OpenCode.exe"] },
-                "linux": { "locate": ["opencode"], "cmd": ["opencode", "--version"] }
+                "windows": {
+                    "locate": [
+                        "opencode"
+                    ],
+                    "cmd": [],
+                    "paths": [
+                        "%LOCALAPPDATA%/OpenCode/OpenCode.exe"
+                    ]
+                },
+                "linux": {
+                    "locate": [
+                        "opencode"
+                    ],
+                    "cmd": [
+                        "opencode",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "registry": "OpenCode" },
-            "online": { "type": "github", "repo": "sst/opencode" },
+            "versionLocal": {
+                "registry": "OpenCode"
+            },
+            "online": {
+                "type": "github",
+                "repo": "sst/opencode"
+            },
             "downloadUrl": "https://opencode.ai/docs",
             "updateCommand": {
                 "windows": "npm install -g opencode-ai",
@@ -998,11 +1655,26 @@
             "homepage": "https://github.com/co-l/openfox",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["openfox", "--version"] },
-                "linux": { "cmd": ["openfox", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "openfox",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "openfox",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "co-l/openfox" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "co-l/openfox"
+            },
             "downloadUrl": "https://github.com/co-l/openfox/releases",
             "updateCommand": {
                 "windows": "npm install -g openfox",
@@ -1020,11 +1692,26 @@
             "homepage": "https://github.com/google-gemini/gemini-cli",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["gemini", "--version"] },
-                "linux": { "cmd": ["gemini", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "gemini",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "gemini",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "@google/gemini-cli" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "@google/gemini-cli"
+            },
             "downloadUrl": "https://github.com/google-gemini/gemini-cli",
             "updateCommand": {
                 "windows": "npm install -g @google/gemini-cli",
@@ -1042,11 +1729,26 @@
             "homepage": "https://github.com/github-early-access/copilot-chat-cli",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["copilot", "--version"] },
-                "linux": { "cmd": ["copilot", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "copilot",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "copilot",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "@github/copilot" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "@github/copilot"
+            },
             "downloadUrl": "https://www.npmjs.com/package/@github/copilot",
             "updateCommand": {
                 "windows": "npm install -g @github/copilot",
@@ -1064,11 +1766,26 @@
             "homepage": "https://aider.chat/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["aider", "--version"] },
-                "linux": { "cmd": ["aider", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "aider",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "aider",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "v?(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "Aider-AI/aider" },
+            "versionLocal": {
+                "regex": "v?(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "Aider-AI/aider"
+            },
             "downloadUrl": "https://aider.chat/",
             "updateCommand": {
                 "windows": "pip install -U aider-chat",
@@ -1086,11 +1803,26 @@
             "homepage": "https://continue.dev/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["continue", "--version"] },
-                "linux": { "cmd": ["continue", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "cn",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "cn",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "@continuedev/cli" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "@continuedev/cli"
+            },
             "downloadUrl": "https://continue.dev/docs",
             "updateCommand": {
                 "windows": "npm install -g @continuedev/cli",
@@ -1108,11 +1840,26 @@
             "homepage": "https://claude.ai/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["claude", "--version"] },
-                "linux": { "cmd": ["claude", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "claude",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "claude",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "npm", "package": "@anthropic-ai/claude-code" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "npm",
+                "package": "@anthropic-ai/claude-code"
+            },
             "downloadUrl": "https://claude.com/claude-code",
             "updateCommand": {
                 "windows": "npm install -g @anthropic-ai/claude-code",
@@ -1130,11 +1877,26 @@
             "homepage": "https://chatgpt.com/",
             "scope_default": "global",
             "detect": {
-                "windows": { "cmd": ["codex", "--version"] },
-                "linux": { "cmd": ["codex", "--version"] }
+                "windows": {
+                    "cmd": [
+                        "codex",
+                        "--version"
+                    ]
+                },
+                "linux": {
+                    "cmd": [
+                        "codex",
+                        "--version"
+                    ]
+                }
             },
-            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
-            "online": { "type": "github", "repo": "openai/codex" },
+            "versionLocal": {
+                "regex": "(\\d+\\.\\d+\\.\\d+)"
+            },
+            "online": {
+                "type": "github",
+                "repo": "openai/codex"
+            },
             "downloadUrl": "https://github.com/openai/codex",
             "updateCommand": {
                 "windows": "npm install -g @openai/codex",
