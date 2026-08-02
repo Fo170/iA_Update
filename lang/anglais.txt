@@ -35,6 +35,18 @@ tab.outils=🔧 Tools & Runtimes
 tab.local=🧠 Local — models
 tab.assistants=🤖 Chat assistants
 tab.code=💻 Coding AI
+tab.reglages=⚙️ Settings
+
+settings.update_windows=Update Windows
+settings.update_linux=Update Linux
+settings.repair_windows=Repair Win
+settings.repair_linux=Repair Linux
+settings.download=Download URL
+settings.save=💾 Save
+settings.reset=↩️ Reset
+
+status.settings_saved=Settings saved to commandes.ini
+status.settings_reset=Default values restored
 
 col.name=Name
 col.local=Local version

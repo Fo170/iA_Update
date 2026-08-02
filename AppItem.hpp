@@ -30,6 +30,11 @@ public:
     static AppItem fromJson(const QJsonObject& obj);
     // Charge le manifeste complet depuis un fichier JSON
     static QList<AppItem> loadManifest(const QString& path, QString* error = nullptr);
+    // Applique les surcharges de commandes depuis un fichier INI éditable
+    // (commandes.ini) : clés [appid]/windows_update, linux_update, windows_repair, linux_repair
+    static void applyIniOverrides(QList<AppItem>& items, const QString& iniPath);
+    // Génère le fichier INI de commandes à partir des valeurs actuelles
+    static void writeIniFile(const QList<AppItem>& items, const QString& iniPath);
     QJsonObject toJson() const;
 
     // ── Champs statiques (manifeste) ─────────────────────────────

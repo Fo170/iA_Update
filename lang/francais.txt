@@ -35,6 +35,18 @@ tab.outils=🔧 Outils & Runtimes
 tab.local=🧠 Local — modèles
 tab.assistants=🤖 Assistants chat
 tab.code=💻 IA de code
+tab.reglages=⚙️ Réglages
+
+settings.update_windows=MAJ Windows
+settings.update_linux=MAJ Linux
+settings.repair_windows=Réparation Win
+settings.repair_linux=Réparation Linux
+settings.download=URL téléchargement
+settings.save=💾 Sauvegarder
+settings.reset=↩️ Réinitialiser
+
+status.settings_saved=Réglages sauvegardés dans commandes.ini
+status.settings_reset=Valeurs par défaut restaurées
 
 col.name=Nom
 col.local=Version locale

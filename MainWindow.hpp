@@ -10,6 +10,7 @@
 class QAction;
 class QTableView;
 class QStandardItemModel;
+class QStandardItem;
 class QLabel;
 class QProgressBar;
 class QComboBox;
@@ -19,6 +20,7 @@ class QCheckBox;
 class QTabWidget;
 class QFileIconProvider;
 class QSortFilterProxyModel;
+class QTableWidget;
 class LangueManager;
 class AppDetector;
 class VersionChecker;
@@ -37,6 +39,7 @@ private slots:
     void analyze_all();
     void refresh_online();
     void open_homepage(const QModelIndex& index);
+    void on_item_checked(QStandardItem* item);
     void selection_changed();
     void select_all_outdated();
     void apply_action_phase2();
@@ -70,6 +73,9 @@ private:
     void apply_filter();
     void rebuild_tabs();
     void set_status_message(const QString& msg);
+    void populate_settings_tab();
+    void save_commands_ini();
+    void reset_commands_defaults();
 
     // Composants
     LangueManager* langue_ = nullptr;
@@ -88,6 +94,10 @@ private:
     QStandardItemModel* model_ = nullptr;
     QSortFilterProxyModel* proxy_ = nullptr;
     QFileIconProvider* icon_provider_ = nullptr;
+    QTableWidget* settings_table_ = nullptr;
+    QWidget* settings_widget_ = nullptr;
+    QPushButton* btn_save_settings_ = nullptr;
+    QPushButton* btn_reset_settings_ = nullptr;
     QLabel* status_label_ = nullptr;
     QProgressBar* progress_bar_ = nullptr;
     QComboBox* filter_status_ = nullptr;

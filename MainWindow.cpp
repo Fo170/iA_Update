@@ -42,6 +42,8 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QSortFilterProxyModel>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 // Colonnes du tableau
 enum {
@@ -232,6 +234,8 @@ void MainWindow::create_central() {
     table_->horizontalHeader()->setStretchLastSection(true);
     table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
+    connect(model_, &QStandardItemModel::itemChanged,
+            this, &MainWindow::on_item_checked);
     connect(table_, &QTableView::clicked, this, &MainWindow::open_homepage);
 
     layout->addWidget(table_, 1);
@@ -273,6 +277,30 @@ void MainWindow::create_central() {
 
     status_label_ = new QLabel;
     statusBar()->addWidget(status_label_, 1);
+
+    // Onglet Réglages : tableau éditable des commandes d'installation
+    auto* settings_widget = new QWidget;
+    settings_widget_ = settings_widget;
+    auto* sl = new QVBoxLayout(settings_widget);
+    settings_table_ = new QTableWidget;
+    settings_table_->setColumnCount(6);
+    settings_table_->setEditTriggers(QAbstractItemView::DoubleClicked |
+                                     QAbstractItemView::EditKeyPressed |
+                                     QAbstractItemView::SelectedClicked);
+    sl->addWidget(settings_table_, 1);
+
+    auto* sbar = new QHBoxLayout;
+    btn_save_settings_ = new QPushButton;
+    btn_reset_settings_ = new QPushButton;
+    sbar->addWidget(btn_save_settings_);
+    sbar->addWidget(btn_reset_settings_);
+    sbar->addStretch(1);
+    sl->addLayout(sbar);
+    connect(btn_save_settings_, &QPushButton::clicked,
+            this, &MainWindow::save_commands_ini);
+    connect(btn_reset_settings_, &QPushButton::clicked,
+            this, &MainWindow::reset_commands_defaults);
+    settings_widget->setObjectName(QStringLiteral("reglages"));
 
     setCentralWidget(central);
 }
@@ -431,6 +459,8 @@ void MainWindow::rebuild_tabs() {
         if (c == current)
             restore = idx;
     }
+    if (settings_widget_)
+        tabs_->addTab(settings_widget_, langue_->get("tab.reglages"));
     tabs_->setCurrentIndex(restore);
     connect(tabs_, &QTabWidget::currentChanged, this, &MainWindow::filter_changed,
             Qt::UniqueConnection);
@@ -451,6 +481,14 @@ void MainWindow::analyze_all() {
             langue_->get("status.manifest_missing") + "\n" + apps_path_);
         return;
     }
+
+    // Application des surcharges utilisateur (commandes.ini) si présent,
+    // sinon génère le fichier par défaut (éditable par l'utilisateur).
+    QString iniPath = QCoreApplication::applicationDirPath() + "/commandes.ini";
+    if (!QFile::exists(iniPath))
+        AppItem::writeIniFile(apps_, iniPath);
+    else
+        AppItem::applyIniOverrides(apps_, iniPath);
 
     // Détection locale en arrière-plan (parallèle, non bloquant)
     progress_bar_->setVisible(true);
@@ -495,6 +533,7 @@ void MainWindow::on_detection_done() {
     filter_status_->blockSignals(false);
 
     populate_table();
+    populate_settings_tab();
 
     // Lancement de la vérification en ligne
     refresh_online();
@@ -550,6 +589,15 @@ void MainWindow::open_homepage(const QModelIndex& index) {
     const AppItem& app = apps_[src.row()];
     if (!app.homepage.isEmpty())
         QDesktopServices::openUrl(QUrl(app.homepage));
+}
+
+void MainWindow::on_item_checked(QStandardItem* item) {
+    if (!item || item->column() != COL_SELECT)
+        return;
+    int srcRow = item->row();
+    if (srcRow < 0 || srcRow >= apps_.size())
+        return;
+    apps_[srcRow].is_selected = (item->checkState() == Qt::Checked);
 }
 
 void MainWindow::selection_changed() {
@@ -661,6 +709,69 @@ void MainWindow::download_selected(const QList<AppItem*>& selected) {
         return;
     set_status_message(langue_->get("status.downloading"));
     downloader_->download(selected, destDir);
+}
+
+void MainWindow::populate_settings_tab() {
+    if (!settings_table_)
+        return;
+    settings_table_->setRowCount(apps_.size());
+
+    QStringList headers;
+    headers << langue_->get("col.name")
+            << langue_->get("settings.update_windows")
+            << langue_->get("settings.update_linux")
+            << langue_->get("settings.repair_windows")
+            << langue_->get("settings.repair_linux")
+            << langue_->get("settings.download");
+    settings_table_->setHorizontalHeaderLabels(headers);
+
+    for (int r = 0; r < apps_.size(); ++r) {
+        const AppItem& app = apps_[r];
+        settings_table_->setItem(r, 0, new QTableWidgetItem(app.name));
+        settings_table_->item(r, 0)->setFlags(Qt::ItemIsEnabled);
+        settings_table_->setItem(r, 1, new QTableWidgetItem(
+            app.updateCommand.value("windows").toString()));
+        settings_table_->setItem(r, 2, new QTableWidgetItem(
+            app.updateCommand.value("linux").toString()));
+        settings_table_->setItem(r, 3, new QTableWidgetItem(
+            app.repairCommand.value("windows").toString()));
+        settings_table_->setItem(r, 4, new QTableWidgetItem(
+            app.repairCommand.value("linux").toString()));
+        settings_table_->setItem(r, 5, new QTableWidgetItem(app.downloadUrl));
+    }
+    settings_table_->horizontalHeader()->setStretchLastSection(true);
+    settings_table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    settings_table_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+}
+
+void MainWindow::save_commands_ini() {
+    if (!settings_table_ || apps_.isEmpty())
+        return;
+    // Récupère les valeurs éditables depuis le tableau
+    for (int r = 0; r < apps_.size() && r < settings_table_->rowCount(); ++r) {
+        auto& app = apps_[r];
+        if (auto* it = settings_table_->item(r, 1))
+            app.updateCommand["windows"] = it->text();
+        if (auto* it = settings_table_->item(r, 2))
+            app.updateCommand["linux"] = it->text();
+        if (auto* it = settings_table_->item(r, 3))
+            app.repairCommand["windows"] = it->text();
+        if (auto* it = settings_table_->item(r, 4))
+            app.repairCommand["linux"] = it->text();
+    }
+    AppItem::writeIniFile(apps_,
+        QCoreApplication::applicationDirPath() + "/commandes.ini");
+    set_status_message(langue_->get("status.settings_saved"));
+}
+
+void MainWindow::reset_commands_defaults() {
+    // Recharge les valeurs par défaut depuis apps.json
+    apps_ = AppItem::loadManifest(apps_path_);
+    AppItem::applyIniOverrides(apps_,
+        QCoreApplication::applicationDirPath() + "/commandes.ini");
+    populate_settings_tab();
+    update_table_all();
+    set_status_message(langue_->get("status.settings_reset"));
 }
 
 void MainWindow::create_command_file(const QList<AppItem*>& selected) {
@@ -810,6 +921,20 @@ void MainWindow::retranslateUi() {
     btn_actions_->setToolTip(langue_->get("phase2.apply.tip"));
     btn_repair_->setText(langue_->get("phase2.repair_incorrect"));
     btn_repair_->setToolTip(langue_->get("phase2.repair_incorrect.tip"));
+
+    // Réglages
+    if (btn_save_settings_) {
+        btn_save_settings_->setText(langue_->get("settings.save"));
+        btn_reset_settings_->setText(langue_->get("settings.reset"));
+    }
+    if (settings_table_ && settings_table_->columnCount() == 6) {
+        settings_table_->setHorizontalHeaderItem(0, new QTableWidgetItem(langue_->get("col.name")));
+        settings_table_->setHorizontalHeaderItem(1, new QTableWidgetItem(langue_->get("settings.update_windows")));
+        settings_table_->setHorizontalHeaderItem(2, new QTableWidgetItem(langue_->get("settings.update_linux")));
+        settings_table_->setHorizontalHeaderItem(3, new QTableWidgetItem(langue_->get("settings.repair_windows")));
+        settings_table_->setHorizontalHeaderItem(4, new QTableWidgetItem(langue_->get("settings.repair_linux")));
+        settings_table_->setHorizontalHeaderItem(5, new QTableWidgetItem(langue_->get("settings.download")));
+    }
 
     // En-têtes si le modèle existe
     if (model_ && model_->columnCount() == COL_COUNT) {

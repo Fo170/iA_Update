@@ -4,8 +4,47 @@
 #include <QFile>
 #include <QProcessEnvironment>
 #include <QVersionNumber>
+#include <QSettings>
 
 AppItem::AppItem() {}
+
+void AppItem::applyIniOverrides(QList<AppItem>& items, const QString& iniPath) {
+    QFile f(iniPath);
+    if (!f.exists())
+        return;
+
+    QSettings settings(iniPath, QSettings::IniFormat);
+    for (auto& item : items) {
+        settings.beginGroup(item.id);
+        QString u = settings.value("windows_update").toString();
+        if (!u.isEmpty())
+            item.updateCommand["windows"] = u;
+        u = settings.value("linux_update").toString();
+        if (!u.isEmpty())
+            item.updateCommand["linux"] = u;
+        u = settings.value("windows_repair").toString();
+        if (!u.isEmpty())
+            item.repairCommand["windows"] = u;
+        u = settings.value("linux_repair").toString();
+        if (!u.isEmpty())
+            item.repairCommand["linux"] = u;
+        settings.endGroup();
+    }
+}
+
+void AppItem::writeIniFile(const QList<AppItem>& items, const QString& iniPath) {
+    QSettings settings(iniPath, QSettings::IniFormat);
+    settings.clear();
+    for (const auto& item : items) {
+        settings.beginGroup(item.id);
+        settings.setValue("windows_update", item.updateCommand.value("windows").toString());
+        settings.setValue("linux_update", item.updateCommand.value("linux").toString());
+        settings.setValue("windows_repair", item.repairCommand.value("windows").toString());
+        settings.setValue("linux_repair", item.repairCommand.value("linux").toString());
+        settings.endGroup();
+    }
+    settings.sync();
+}
 
 QList<AppItem> AppItem::loadManifest(const QString& path, QString* error) {
     QList<AppItem> items;
