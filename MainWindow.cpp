@@ -244,8 +244,14 @@ void MainWindow::create_central() {
     table_->setModel(proxy_);
     table_->setSortingEnabled(true);
     table_->sortByColumn(COL_NAME, Qt::AscendingOrder);
+    table_->setWordWrap(true);
+    table_->setTextElideMode(Qt::ElideNone);
     table_->horizontalHeader()->setStretchLastSection(true);
-    table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    table_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    table_->horizontalHeader()->setMinimumSectionSize(40);
+    table_->horizontalHeader()->setMaximumSectionSize(320);
+    // Hauteur des lignes adaptée au texte multiligne (retour à la ligne)
+    table_->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     connect(model_, &QStandardItemModel::itemChanged,
             this, &MainWindow::on_item_checked);
@@ -372,6 +378,22 @@ void MainWindow::populate_table() {
             << langue_->get("col.scope") << langue_->get("col.path")
             << langue_->get("col.path_ref");
     model_->setHorizontalHeaderLabels(headers);
+
+    // Ajustement des largeurs au contenu
+    table_->resizeColumnsToContents();
+    table_->horizontalHeader()->setSectionResizeMode(COL_ICON, QHeaderView::Fixed);
+    table_->horizontalHeader()->setSectionResizeMode(COL_SELECT, QHeaderView::Fixed);
+    table_->setColumnWidth(COL_ICON, 30);
+    table_->setColumnWidth(COL_SELECT, 30);
+    // Largeur minimale pour les colonnes principales lisibles
+    table_->horizontalHeader()->setSectionResizeMode(COL_NAME, QHeaderView::Interactive);
+    table_->setColumnWidth(COL_NAME, 170);
+    table_->setColumnWidth(COL_LOCAL, 100);
+    table_->setColumnWidth(COL_ONLINE, 100);
+    table_->setColumnWidth(COL_STATUS, 150);
+    table_->setColumnWidth(COL_SCOPE, 90);
+    table_->setColumnWidth(COL_PATH, 300);
+    table_->setColumnWidth(COL_PATH_REF, 110);
 
     apply_filter();
 }
