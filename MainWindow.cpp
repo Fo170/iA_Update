@@ -47,6 +47,8 @@
 #include <QFrame>
 #include <QGroupBox>
 #include <QFormLayout>
+#include <QFontMetrics>
+#include <QResizeEvent>
 
 // Colonnes du tableau
 enum {
@@ -250,8 +252,8 @@ void MainWindow::create_central() {
     table_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     table_->horizontalHeader()->setMinimumSectionSize(40);
     table_->horizontalHeader()->setMaximumSectionSize(900);
-    // La colonne Chemin absorbe l'espace restant de la fenêtre
-    table_->horizontalHeader()->setSectionResizeMode(COL_PATH, QHeaderView::Stretch);
+    // La colonne Chemin s'adapte au contenu ET absorbe l'espace restant
+    table_->horizontalHeader()->setSectionResizeMode(COL_PATH, QHeaderView::Interactive);
     // Hauteur des lignes adaptée au texte multiligne (retour à la ligne)
     table_->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -394,10 +396,28 @@ void MainWindow::populate_table() {
     table_->setColumnWidth(COL_ONLINE, 100);
     table_->setColumnWidth(COL_STATUS, 150);
     table_->setColumnWidth(COL_SCOPE, 90);
-    table_->setColumnWidth(COL_PATH, 300);
     table_->setColumnWidth(COL_PATH_REF, 70);
+    // La colonne Chemin : largeur = au moins celle du contenu, sinon remplit
+    table_->setColumnWidth(COL_PATH, path_column_width());
 
     apply_filter();
+}
+
+// Largeur de la colonne Chemin : au moins celle du texte le plus long,
+// mais au plus la largeur restante de la fenêtre.
+int MainWindow::path_column_width() const {
+    int maxContent = 100;
+    for (const auto& app : apps_) {
+        QFontMetrics fm(table_->font());
+        maxContent = qMax(maxContent, fm.horizontalAdvance(app.install_path) + 20);
+    }
+    int viewport = table_->viewport()->width();
+    int other = 0;
+    for (int c = 0; c < COL_COUNT; ++c) {
+        if (c != COL_PATH)
+            other += table_->columnWidth(c);
+    }
+    return qMin(qMax(maxContent, 250), qMax(viewport - other, 250));
 }
 
 void MainWindow::update_row(int row) {
@@ -1135,6 +1155,13 @@ void MainWindow::changer_langue(const QString& langCode) {
 void MainWindow::closeEvent(QCloseEvent* event) {
     save_settings();
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    QMainWindow::resizeEvent(event);
+    // Réajuste la colonne Chemin pour qu'elle remplisse la fenêtre
+    if (table_ && table_->model() && apps_.size() > 0)
+        table_->setColumnWidth(COL_PATH, path_column_width());
 }
 
 void MainWindow::download_language(const QString& code) {

@@ -36,6 +36,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
 private slots:
     void analyze_all();
@@ -78,6 +79,7 @@ private:
     void populate_settings_tab();
     void save_commands_ini();
     void reset_commands_defaults();
+    int path_column_width() const;
 
     // Composants
     LangueManager* langue_ = nullptr;
