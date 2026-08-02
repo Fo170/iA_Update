@@ -704,10 +704,11 @@ void MainWindow::select_all_outdated() {
 }
 
 void MainWindow::apply_action_phase2() {
-    // Collecte des apps sélectionnées
+    // Collecte des apps sélectionnées (qu'elles soient installées ou non :
+    // on peut télécharger/installer une app non encore installée).
     QList<AppItem*> selected;
     for (int row = 0; row < apps_.size(); ++row) {
-        if (apps_[row].is_selected && apps_[row].installed)
+        if (apps_[row].is_selected)
             selected.append(&apps_[row]);
     }
 
