@@ -11,6 +11,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Network Concurrent)
 file(COPY ico/app.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ico)
 file(COPY lang/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lang)
 file(COPY apps.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY icones_app/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/icones_app)
 
 add_executable(iA_Update
     main.cpp

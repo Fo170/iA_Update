@@ -41,6 +41,7 @@
 #include <QTimer>
 #include <QtConcurrent>
 #include <QFutureWatcher>
+#include <QSortFilterProxyModel>
 
 // Colonnes du tableau
 enum {
@@ -54,6 +55,60 @@ enum {
     COL_PATH,
     COL_PATH_REF,
     COL_COUNT
+};
+
+// Proxy de tri + filtres. Le tri numérique est appliqué sur les colonnes de
+// version (COL_LOCAL/COL_ONLINE). Le filtrage (statut/catégorie/recherche)
+// s'appuie sur la liste d'applications source (même index de ligne).
+class SortProxy : public QSortFilterProxyModel {
+public:
+    explicit SortProxy(QObject* parent = nullptr)
+        : QSortFilterProxyModel(parent) {}
+
+    void setAppsSource(QList<AppItem>* apps) { apps_ = apps; }
+    void setFilterData(const QString& status, const QString& category, const QString& search) {
+        status_ = status;
+        category_ = category;
+        search_ = search.toLower();
+        invalidateFilter();
+    }
+
+    bool lessThan(const QModelIndex& left, const QModelIndex& right) const override {
+        int col = left.column();
+        if (col == COL_LOCAL || col == COL_ONLINE) {
+            QString a = left.data(Qt::DisplayRole).toString().trimmed();
+            QString b = right.data(Qt::DisplayRole).toString().trimmed();
+            QVersionNumber va = QVersionNumber::fromString(a);
+            QVersionNumber vb = QVersionNumber::fromString(b);
+            if (!va.isNull() && !vb.isNull())
+                return va < vb;
+            return QString::compare(a, b, Qt::CaseInsensitive) < 0;
+        }
+        return QString::compare(left.data().toString(),
+                                right.data().toString(),
+                                Qt::CaseInsensitive) < 0;
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override {
+        if (!apps_ || sourceRow >= apps_->size())
+            return true;
+        const AppItem& app = apps_->at(sourceRow);
+        if (!status_.isEmpty() && app.statusKey() != status_)
+            return false;
+        if (!category_.isEmpty() && app.category != category_)
+            return false;
+        if (!search_.isEmpty() &&
+            !app.name.toLower().contains(search_) &&
+            !app.id.toLower().contains(search_))
+            return false;
+        return true;
+    }
+
+private:
+    QList<AppItem>* apps_ = nullptr;
+    QString status_;
+    QString category_;
+    QString search_;
 };
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -168,7 +223,12 @@ void MainWindow::create_central() {
 
     model_ = new QStandardItemModel(this);
     model_->setColumnCount(COL_COUNT);
-    table_->setModel(model_);
+    proxy_ = new SortProxy(this);
+    static_cast<SortProxy*>(proxy_)->setAppsSource(&apps_);
+    proxy_->setSourceModel(model_);
+    table_->setModel(proxy_);
+    table_->setSortingEnabled(true);
+    table_->sortByColumn(COL_NAME, Qt::AscendingOrder);
     table_->horizontalHeader()->setStretchLastSection(true);
     table_->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -261,10 +321,15 @@ void MainWindow::update_row(int row) {
     QStandardItem* ck = model_->item(row, COL_SELECT);
     if (ck) ck->setCheckState(app.is_selected ? Qt::Checked : Qt::Unchecked);
 
-    // Icône de l'application (exe installé si possible)
+    // Icône de l'application : icône locale (icones_app) > exe installé > générique
     if (auto* icon = model_->item(row, COL_ICON)) {
         QIcon ic;
-        if (app.installed && !app.install_path.isEmpty()) {
+        // 1. Icône locale fournie dans icones_app/<id>.png
+        QString localIcon = QCoreApplication::applicationDirPath()
+            + "/icones_app/" + app.id + ".png";
+        if (QFile::exists(localIcon)) {
+            ic = QIcon(localIcon);
+        } else if (app.installed && !app.install_path.isEmpty()) {
             QString exePath = app.install_path;
             // Si le chemin est un dossier (cas PATH), on cherche un .exe dedans
             if (QFileInfo(exePath).isDir()) {
@@ -330,7 +395,7 @@ void MainWindow::update_row(int row) {
 }
 
 void MainWindow::apply_filter() {
-    if (!model_) return;
+    if (!proxy_) return;
 
     int stIdx = filter_status_->currentIndex();
     QString stData = filter_status_->itemData(stIdx).toString();
@@ -338,23 +403,10 @@ void MainWindow::apply_filter() {
                                 ? tabs_->widget(tabs_->currentIndex())->objectName()
                                 : QString()
                             : QString();
-    QString search = search_box_->text().toLower();
+    QString search = search_box_->text();
 
-    for (int row = 0; row < apps_.size(); ++row) {
-        const AppItem& app = apps_[row];
-        bool show = true;
-
-        if (!stData.isEmpty() && app.statusKey() != stData)
-            show = false;
-        if (show && !catData.isEmpty() && app.category != catData)
-            show = false;
-        if (show && !search.isEmpty() &&
-            !app.name.toLower().contains(search) &&
-            !app.id.toLower().contains(search))
-            show = false;
-
-        table_->setRowHidden(row, !show);
-    }
+    auto* sp = static_cast<SortProxy*>(proxy_);
+    sp->setFilterData(stData, catData, search);
 }
 
 void MainWindow::rebuild_tabs() {
@@ -491,7 +543,11 @@ void MainWindow::on_check_error(const QString& appId, const QString& error) {
 void MainWindow::open_homepage(const QModelIndex& index) {
     if (index.column() != COL_NAME)
         return;
-    const AppItem& app = apps_[index.row()];
+    // L'index vient de la vue (proxy) : mapper vers la source
+    QModelIndex src = proxy_ ? proxy_->mapToSource(index) : index;
+    if (src.row() < 0 || src.row() >= apps_.size())
+        return;
+    const AppItem& app = apps_[src.row()];
     if (!app.homepage.isEmpty())
         QDesktopServices::openUrl(QUrl(app.homepage));
 }
