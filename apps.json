@@ -1,0 +1,365 @@
+{
+    "$comment": "Manifeste des applications surveillées par iA_Update. Champs par application : id, name, category, homepage, detect (cmd/paths par OS), versionLocal.regex, online (source de version en ligne), downloadUrl, updateCommand (par OS). Les types online supportés : github (repo), npm (package), pypi (package), endoflife (key), none (pas de source fiable).",
+    "apps": [
+        {
+            "id": "python",
+            "name": "Python",
+            "category": "Runtime",
+            "homepage": "https://www.python.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["py", "--version"], "paths": ["C:/Python*", "C:/Program Files/Python*"] },
+                "linux": { "cmd": ["python3", "--version"], "paths": ["/usr/bin/python3", "/usr/local/bin/python3"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "endoflife", "key": "python" },
+            "downloadUrl": "https://www.python.org/downloads/",
+            "updateCommand": {
+                "windows": "winget upgrade --id Python.Python.3.12",
+                "linux": "sudo apt update && sudo apt upgrade python3"
+            }
+        },
+        {
+            "id": "nodejs",
+            "name": "Node.js",
+            "category": "Runtime",
+            "homepage": "https://nodejs.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["node", "--version"] },
+                "linux": { "cmd": ["node", "--version"] }
+            },
+            "versionLocal": { "regex": "v?(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "endoflife", "key": "nodejs" },
+            "downloadUrl": "https://nodejs.org/en/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id OpenJS.NodeJS.LTS",
+                "linux": "sudo apt update && sudo apt upgrade nodejs"
+            }
+        },
+        {
+            "id": "ghostwriter",
+            "name": "Ghostwriter",
+            "category": "Editeur",
+            "homepage": "https://ghostwriter.kde.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["C:/Program Files/Ghostwriter/ghostwriter.exe"] },
+                "linux": { "cmd": ["ghostwriter"] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "github", "repo": "wereturtle/ghostwriter" },
+            "downloadUrl": "https://github.com/wereturtle/ghostwriter/releases",
+            "updateCommand": {
+                "windows": "winget upgrade --id Ghostwriter.Ghostwriter",
+                "linux": "sudo apt update && sudo apt upgrade ghostwriter"
+            }
+        },
+        {
+            "id": "nodered",
+            "name": "Node-RED",
+            "category": "Automation",
+            "homepage": "https://nodered.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["node-red", "--version"] },
+                "linux": { "cmd": ["node-red", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "npm", "package": "node-red" },
+            "downloadUrl": "https://www.npmjs.com/package/node-red",
+            "updateCommand": {
+                "windows": "npm install -g node-red",
+                "linux": "sudo npm install -g --unsafe-perm node-red"
+            }
+        },
+        {
+            "id": "n8n",
+            "name": "n8n",
+            "category": "Automation",
+            "homepage": "https://n8n.io/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["n8n", "--version"] },
+                "linux": { "cmd": ["n8n", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "npm", "package": "n8n" },
+            "downloadUrl": "https://www.npmjs.com/package/n8n",
+            "updateCommand": {
+                "windows": "npm install -g n8n",
+                "linux": "sudo npm install -g n8n"
+            }
+        },
+        {
+            "id": "qt",
+            "name": "Qt",
+            "category": "Framework",
+            "homepage": "https://www.qt.io/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["qmake", "--version"], "paths": ["C:/Qt/*"] },
+                "linux": { "cmd": ["qmake", "--version"] }
+            },
+            "versionLocal": { "regex": "Qt version (\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "endoflife", "key": "qt" },
+            "downloadUrl": "https://www.qt.io/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id QtProject.Qt",
+                "linux": "sudo apt update && sudo apt upgrade qt6-base-dev"
+            }
+        },
+        {
+            "id": "vscode",
+            "name": "Visual Studio Code",
+            "category": "Editeur",
+            "homepage": "https://code.visualstudio.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": ["code", "--version"], "paths": ["%LOCALAPPDATA%/Programs/Microsoft VS Code/Code.exe", "C:/Program Files/Microsoft VS Code/Code.exe"] },
+                "linux": { "cmd": ["code", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "microsoft/vscode" },
+            "downloadUrl": "https://code.visualstudio.com/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id Microsoft.VisualStudioCode",
+                "linux": "sudo apt update && sudo apt upgrade code"
+            }
+        },
+        {
+            "id": "spyder",
+            "name": "Spyder",
+            "category": "IDE",
+            "homepage": "https://www.spyder-ide.org/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["spyder", "--version"] },
+                "linux": { "cmd": ["spyder", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "pypi", "package": "spyder" },
+            "downloadUrl": "https://www.spyder-ide.org/",
+            "updateCommand": {
+                "windows": "pip install -U spyder",
+                "linux": "pip3 install -U spyder"
+            }
+        },
+        {
+            "id": "anaconda",
+            "name": "Anaconda",
+            "category": "Runtime",
+            "homepage": "https://www.anaconda.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": ["conda", "--version"], "paths": ["C:/ProgramData/Anaconda3", "%USERPROFILE%/anaconda3"] },
+                "linux": { "cmd": ["conda", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "conda/conda" },
+            "downloadUrl": "https://www.anaconda.com/download",
+            "updateCommand": {
+                "windows": "conda update -n base -c defaults conda",
+                "linux": "conda update -n base -c defaults conda"
+            }
+        },
+        {
+            "id": "obsidian",
+            "name": "Obsidian",
+            "category": "Productivite",
+            "homepage": "https://obsidian.md/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Obsidian/Obsidian.exe", "%APPDATA%/Obsidian/Obsidian.exe"] },
+                "linux": { "cmd": ["obsidian"] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "github", "repo": "obsidianmd/obsidian-releases" },
+            "downloadUrl": "https://obsidian.md/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id Obsidian.Obsidian",
+                "linux": "sudo apt update && sudo apt upgrade obsidian"
+            }
+        },
+        {
+            "id": "ollama",
+            "name": "Ollama",
+            "category": "IA Locale",
+            "homepage": "https://ollama.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": ["ollama", "--version"], "paths": ["%LOCALAPPDATA%/Programs/Ollama/ollama app.exe"] },
+                "linux": { "cmd": ["ollama", "--version"] }
+            },
+            "versionLocal": { "regex": "version is (\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "ollama/ollama" },
+            "downloadUrl": "https://ollama.com/download",
+            "updateCommand": {
+                "windows": "winget upgrade --id Ollama.Ollama",
+                "linux": "curl -fsSL https://ollama.com/install.sh | sh"
+            }
+        },
+        {
+            "id": "lmstudio",
+            "name": "LM Studio",
+            "category": "IA Locale",
+            "homepage": "https://lmstudio.ai/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/LM Studio/LM Studio.exe"] },
+                "linux": { "cmd": ["lmstudio"] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "none" },
+            "downloadUrl": "https://lmstudio.ai/",
+            "updateCommand": {
+                "windows": "winget upgrade --id ElementLabs.LMStudio",
+                "linux": "Télécharger depuis https://lmstudio.ai/"
+            }
+        },
+        {
+            "id": "anythingllm",
+            "name": "AnythingLLM",
+            "category": "IA Locale",
+            "homepage": "https://anythingllm.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/AnythingLLM/AnythingLLM.exe", "%APPDATA%/AnythingLLM"] },
+                "linux": { "cmd": ["anythingllm"] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "github", "repo": "Mintplex-Labs/anything-llm" },
+            "downloadUrl": "https://anythingllm.com/desktop",
+            "updateCommand": {
+                "windows": "winget upgrade --id MintplexLabs.AnythingLLM",
+                "linux": "Télécharger depuis https://anythingllm.com/desktop"
+            }
+        },
+        {
+            "id": "opencode",
+            "name": "OpenCode",
+            "category": "IA CLI",
+            "homepage": "https://opencode.ai/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["opencode", "--version"] },
+                "linux": { "cmd": ["opencode", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "sst/opencode" },
+            "downloadUrl": "https://opencode.ai/docs",
+            "updateCommand": {
+                "windows": "npm install -g opencode-ai",
+                "linux": "npm install -g opencode-ai"
+            }
+        },
+        {
+            "id": "kimi",
+            "name": "Kimi",
+            "category": "IA Cloud",
+            "homepage": "https://kimi.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Kimi/Kimi.exe", "%APPDATA%/Kimi"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "none" },
+            "downloadUrl": "https://kimi.com/",
+            "updateCommand": {
+                "windows": "Télécharger depuis https://kimi.com/",
+                "linux": "Télécharger depuis https://kimi.com/"
+            }
+        },
+        {
+            "id": "deepseek",
+            "name": "DeepSeek",
+            "category": "IA Cloud",
+            "homepage": "https://chat.deepseek.com/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/DeepSeek/DeepSeek.exe", "%APPDATA%/DeepSeek"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "none" },
+            "downloadUrl": "https://chat.deepseek.com/",
+            "updateCommand": {
+                "windows": "Télécharger depuis https://chat.deepseek.com/",
+                "linux": "Télécharger depuis https://chat.deepseek.com/"
+            }
+        },
+        {
+            "id": "claude",
+            "name": "Claude",
+            "category": "IA CLI",
+            "homepage": "https://claude.ai/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["claude", "--version"] },
+                "linux": { "cmd": ["claude", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "npm", "package": "@anthropic-ai/claude-code" },
+            "downloadUrl": "https://claude.com/claude-code",
+            "updateCommand": {
+                "windows": "npm install -g @anthropic-ai/claude-code",
+                "linux": "npm install -g @anthropic-ai/claude-code"
+            }
+        },
+        {
+            "id": "codex",
+            "name": "ChatGPT (Codex)",
+            "category": "IA CLI",
+            "homepage": "https://chatgpt.com/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["codex", "--version"] },
+                "linux": { "cmd": ["codex", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "github", "repo": "openai/codex" },
+            "downloadUrl": "https://github.com/openai/codex",
+            "updateCommand": {
+                "windows": "npm install -g @openai/codex",
+                "linux": "npm install -g @openai/codex"
+            }
+        },
+        {
+            "id": "antigravity",
+            "name": "Antigravity",
+            "category": "IA Cloud",
+            "homepage": "https://antigravity.google/",
+            "scope_default": "global",
+            "detect": {
+                "windows": { "cmd": ["antigravity", "--version"] },
+                "linux": { "cmd": ["antigravity", "--version"] }
+            },
+            "versionLocal": { "regex": "(\\d+\\.\\d+\\.\\d+)" },
+            "online": { "type": "none" },
+            "downloadUrl": "https://antigravity.google/",
+            "updateCommand": {
+                "windows": "Télécharger depuis https://antigravity.google/",
+                "linux": "Télécharger depuis https://antigravity.google/"
+            }
+        },
+        {
+            "id": "perplexity",
+            "name": "Perplexity",
+            "category": "IA Cloud",
+            "homepage": "https://www.perplexity.ai/",
+            "scope_default": "user",
+            "detect": {
+                "windows": { "cmd": [], "paths": ["%LOCALAPPDATA%/Programs/Perplexity/Perplexity.exe", "%APPDATA%/Perplexity"] },
+                "linux": { "cmd": [] }
+            },
+            "versionLocal": { "regex": "" },
+            "online": { "type": "none" },
+            "downloadUrl": "https://www.perplexity.ai/",
+            "updateCommand": {
+                "windows": "Télécharger depuis https://www.perplexity.ai/",
+                "linux": "Télécharger depuis https://www.perplexity.ai/"
+            }
+        }
+    ]
+}

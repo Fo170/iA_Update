@@ -1,0 +1,28 @@
+# Répertoires de build
+windows/
+linux/
+build*/
+
+# Qt / fichiers générés
+CMakeCache.txt
+CMakeFiles/
+*.o
+*.obj
+*.user
+cmake_install.cmake
+Makefile
+iA_Update_autogen/
+
+# Fichiers de déploiement / temporaires
+deploy_windows/
+deploy_linux/
+*.png.tmp
+screenshot*.png
+
+# Fichiers générés au lancement
+application.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp

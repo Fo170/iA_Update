@@ -1,0 +1,68 @@
+# English — iA_Update
+app.name=iA_Update
+
+menu.file=&File
+menu.file.analyze=🔍 Analyze
+menu.file.refresh=🔄 Check online versions
+menu.file.quit=❌ Quit
+
+menu.tools=&Tools
+menu.language=&Language
+menu.help=&Help
+menu.help.about=ℹ️ About
+
+status.ready=Ready
+status.checking=Checking online versions...
+status.detecting=Detecting installed applications...
+status.manifest_missing=Applications manifest not found:
+status.none_selected=No application selected.
+status.check_error=Check error
+status.downloading=Downloading...
+status.download_done=Download complete
+status.download_failed=Download failed
+status.installing=Installing...
+status.install_done=Installation complete
+status.install_failed=Installation failed
+status.command_created=Command file created
+status.error_writing=Unable to write file.
+
+filter.all=All
+filter.search=Search...
+
+col.name=Name
+col.local=Local version
+col.online=Online version
+col.status=Status
+col.scope=Scope
+col.path=Install path
+col.path_ref=In PATH
+
+status.not_installed=🔴 Not installed
+status.up_to_date=🟢 Up to date
+status.update_available=🟠 Update available
+status.unknown_local=⚪ Local version unknown
+status.unknown_online=🔵 Online version unknown
+status.error=❌ Error
+
+scope.global=Global
+scope.user=User
+scope.unknown=Unknown
+
+path.yes=Yes
+path.no=No
+
+phase2.download=📥 Download
+phase2.command=📄 Create command file
+phase2.install=⚙️ Install automatically
+phase2.apply=Apply actions
+phase2.apply.tip=Download / create script / install for selected applications
+
+dialog.download_dir=Choose download folder
+dialog.command_file=Save command file
+dialog.install.title=Automatic installation
+dialog.install.confirm=The selected applications will be updated automatically.\n\nThis operation requires administrator rights.\n\nContinue?
+dialog.install.yes=Install
+dialog.install.no=Cancel
+
+dialog.about.title=ℹ️ About
+dialog.about.text=<h3>%1</h3><p>Version %2</p><p>Installation and update checker for AI applications and development tools.</p><p>Qt6 cross-platform.</p>

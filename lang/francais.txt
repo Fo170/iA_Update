@@ -1,0 +1,68 @@
+# Français — iA_Update
+app.name=iA_Update
+
+menu.file=&Fichier
+menu.file.analyze=🔍 Analyser
+menu.file.refresh=🔄 Vérifier versions en ligne
+menu.file.quit=❌ Quitter
+
+menu.tools=&Outils
+menu.language=&Langue
+menu.help=&Aide
+menu.help.about=ℹ️ À propos
+
+status.ready=Prêt
+status.checking=Vérification des versions en ligne...
+status.detecting=Détection des applications installées...
+status.manifest_missing=Manifeste des applications introuvable :
+status.none_selected=Aucune application sélectionnée.
+status.check_error=Erreur de vérification
+status.downloading=Téléchargement en cours...
+status.download_done=Téléchargement terminé
+status.download_failed=Échec du téléchargement
+status.installing=Installation en cours...
+status.install_done=Installation terminée
+status.install_failed=Échec de l'installation
+status.command_created=Fichier de commande créé
+status.error_writing=Impossible d'écrire le fichier.
+
+filter.all=Tous
+filter.search=Rechercher...
+
+col.name=Nom
+col.local=Version locale
+col.online=Version en ligne
+col.status=Statut
+col.scope=Portée
+col.path=Chemin d'installation
+col.path_ref=Référencé dans le PATH
+
+status.not_installed=🔴 Non installé
+status.up_to_date=🟢 À jour
+status.update_available=🟠 Mise à jour disponible
+status.unknown_local=⚪ Version locale inconnue
+status.unknown_online=🔵 Version en ligne inconnue
+status.error=❌ Erreur
+
+scope.global=Globale
+scope.user=Utilisateur
+scope.unknown=Inconnue
+
+path.yes=Oui
+path.no=Non
+
+phase2.download=📥 Télécharger
+phase2.command=📄 Créer fichier commande
+phase2.install=⚙️ Installer automatiquement
+phase2.apply=Exécuter les actions
+phase2.apply.tip=Télécharger / créer le script / installer pour les applications sélectionnées
+
+dialog.download_dir=Choisir le dossier de téléchargement
+dialog.command_file=Enregistrer le fichier de commande
+dialog.install.title=Installation automatique
+dialog.install.confirm=Les applications sélectionnées vont être mises à jour automatiquement.\n\nCette opération nécessite des droits administrateur.\n\nContinuer ?
+dialog.install.yes=Installer
+dialog.install.no=Annuler
+
+dialog.about.title=ℹ️ À propos
+dialog.about.text=<h3>%1</h3><p>Version %2</p><p>Vérificateur d'installation et de mises à jour des applications IA et outils de développement.</p><p>Qt6 multi-plateforme.</p>
