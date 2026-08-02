@@ -18,6 +18,7 @@ class QLineEdit;
 class QPushButton;
 class QCheckBox;
 class QTabWidget;
+class QStackedWidget;
 class QFileIconProvider;
 class QSortFilterProxyModel;
 class QScrollArea;
@@ -105,6 +106,8 @@ private:
     QProgressBar* progress_bar_ = nullptr;
     QComboBox* filter_status_ = nullptr;
     QTabWidget* tabs_ = nullptr;
+    QStackedWidget* stack_ = nullptr;
+    QWidget* apps_page_ = nullptr;
     QLineEdit* search_box_ = nullptr;
     QCheckBox* cb_download_ = nullptr;
     QCheckBox* cb_command_ = nullptr;

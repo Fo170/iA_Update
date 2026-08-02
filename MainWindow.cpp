@@ -42,6 +42,7 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 #include <QSortFilterProxyModel>
+#include <QStackedWidget>
 #include <QScrollArea>
 #include <QFrame>
 #include <QGroupBox>
@@ -184,11 +185,21 @@ void MainWindow::create_toolbar() {
 void MainWindow::create_central() {
     auto* central = new QWidget(this);
     auto* layout = new QVBoxLayout(central);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-    // Onglets par catégorie
+    // Onglets par catégorie (sélecteur)
     tabs_ = new QTabWidget;
     tabs_->setDocumentMode(true);
     layout->addWidget(tabs_);
+
+    // Stack : page applications + page réglages
+    stack_ = new QStackedWidget;
+    layout->addWidget(stack_, 1);
+
+    // ── Page Applications ──────────────────────────────────────────────
+    apps_page_ = new QWidget;
+    auto* apps_layout = new QVBoxLayout(apps_page_);
+    apps_layout->setContentsMargins(4, 4, 4, 4);
 
     // Barre de filtres
     auto* filter_bar = new QHBoxLayout;
@@ -208,7 +219,7 @@ void MainWindow::create_central() {
     btn_select->setToolTip(QString());
     filter_bar->addWidget(btn_select);
 
-    layout->addLayout(filter_bar);
+    apps_layout->addLayout(filter_bar);
 
     connect(filter_status_, &QComboBox::currentIndexChanged,
             this, &MainWindow::filter_changed);
@@ -240,14 +251,14 @@ void MainWindow::create_central() {
             this, &MainWindow::on_item_checked);
     connect(table_, &QTableView::clicked, this, &MainWindow::open_homepage);
 
-    layout->addWidget(table_, 1);
+    apps_layout->addWidget(table_, 1);
 
     // Barre de progression
     progress_bar_ = new QProgressBar;
     progress_bar_->setRange(0, 100);
     progress_bar_->setValue(0);
     progress_bar_->setVisible(false);
-    layout->addWidget(progress_bar_);
+    apps_layout->addWidget(progress_bar_);
 
     // Phase 2 : groupe d'actions
     auto* phase2 = new QGroupBox;
@@ -268,7 +279,7 @@ void MainWindow::create_central() {
     p2->addWidget(btn_repair_);
     p2->addWidget(btn_actions_);
 
-    layout->addWidget(phase2);
+    apps_layout->addWidget(phase2);
 
     connect(cb_download_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
     connect(cb_command_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
@@ -280,7 +291,7 @@ void MainWindow::create_central() {
     status_label_ = new QLabel;
     statusBar()->addWidget(status_label_, 1);
 
-    // Onglet Réglages : liste verticale de groupes, un par application
+    // ── Page Réglages : liste verticale de groupes, un par application ──
     auto* settings_widget = new QWidget;
     settings_widget_ = settings_widget;
     auto* sl = new QVBoxLayout(settings_widget);
@@ -309,6 +320,22 @@ void MainWindow::create_central() {
     connect(btn_reset_settings_, &QPushButton::clicked,
             this, &MainWindow::reset_commands_defaults);
     settings_widget->setObjectName(QStringLiteral("reglages"));
+
+    // Ajout des deux pages au stack
+    stack_->addWidget(apps_page_);
+    stack_->addWidget(settings_widget_);
+
+    // Sélection de page selon l'onglet
+    connect(tabs_, &QTabWidget::currentChanged, this, [this]() {
+        int idx = tabs_->currentIndex();
+        QString obj = idx >= 0 && tabs_->widget(idx)
+            ? tabs_->widget(idx)->objectName() : QString();
+        if (obj == QStringLiteral("reglages"))
+            stack_->setCurrentIndex(1);
+        else
+            stack_->setCurrentIndex(0);
+        filter_changed();
+    });
 
     setCentralWidget(central);
 }
@@ -456,6 +483,7 @@ void MainWindow::rebuild_tabs() {
         tabs_->removeTab(0);
 
     auto* allTab = new QWidget;
+    allTab->setObjectName(QString());
     tabs_->addTab(allTab, langue_->get("tab.all"));
     QStringList cats = {"build", "outils", "local", "assistants", "code"};
     int restore = 0;
@@ -467,8 +495,10 @@ void MainWindow::rebuild_tabs() {
         if (c == current)
             restore = idx;
     }
-    if (settings_widget_)
-        tabs_->addTab(settings_widget_, langue_->get("tab.reglages"));
+    // Onglet Réglages : widget vide, la page réelle est affichée via le stack
+    auto* reglagesTab = new QWidget;
+    reglagesTab->setObjectName(QStringLiteral("reglages"));
+    tabs_->addTab(reglagesTab, langue_->get("tab.reglages"));
     tabs_->setCurrentIndex(restore);
     connect(tabs_, &QTabWidget::currentChanged, this, &MainWindow::filter_changed,
             Qt::UniqueConnection);
@@ -745,9 +775,32 @@ void MainWindow::populate_settings_tab() {
     for (int r = 0; r < apps_.size(); ++r) {
         const AppItem& app = apps_[r];
 
-        auto* box = new QGroupBox(app.name);
+        auto* box = new QGroupBox;
         box->setObjectName(QStringLiteral("group_") + app.id);
-        auto* form = new QFormLayout(box);
+        auto* vbox = new QVBoxLayout(box);
+        vbox->setContentsMargins(8, 6, 8, 6);
+
+        // En-tête : icône + nom
+        auto* head = new QHBoxLayout;
+        auto* icon_label = new QLabel;
+        QString localIcon = QCoreApplication::applicationDirPath()
+            + "/icones_app/" + app.id + ".png";
+        QIcon ic;
+        if (QFile::exists(localIcon))
+            ic = QIcon(localIcon);
+        else
+            ic = style()->standardIcon(QStyle::SP_ComputerIcon);
+        icon_label->setPixmap(ic.pixmap(20, 20));
+        auto* name_label = new QLabel(app.name);
+        QFont f = name_label->font();
+        f.setBold(true);
+        name_label->setFont(f);
+        head->addWidget(icon_label);
+        head->addWidget(name_label);
+        head->addStretch(1);
+        vbox->addLayout(head);
+
+        auto* form = new QFormLayout;
         form->setLabelAlignment(Qt::AlignRight);
         form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
 
@@ -766,7 +819,8 @@ void MainWindow::populate_settings_tab() {
         form->addRow(langue_->get("settings.repair_linux"), e4);
         form->addRow(langue_->get("settings.download"), e5);
 
-        box->setLayout(form);
+        vbox->addLayout(form);
+        box->setLayout(vbox);
         list_layout->addWidget(box);
 
         // Séparateur visuel entre deux applications
@@ -980,7 +1034,18 @@ void MainWindow::retranslateUi() {
         };
         const auto boxes = settings_list_->findChildren<QGroupBox*>();
         for (QGroupBox* box : boxes) {
-            if (auto* form = qobject_cast<QFormLayout*>(box->layout())) {
+            // Le QFormLayout est imbriqué dans le layout vertical du groupe
+            auto* vbox = qobject_cast<QVBoxLayout*>(box->layout());
+            QFormLayout* form = nullptr;
+            if (vbox) {
+                for (int i = 0; i < vbox->count(); ++i) {
+                    if (auto* fl = qobject_cast<QFormLayout*>(vbox->itemAt(i)->layout())) {
+                        form = fl;
+                        break;
+                    }
+                }
+            }
+            if (form) {
                 for (int i = 0; i < form->rowCount(); ++i) {
                     QLayoutItem* li = form->itemAt(i, QFormLayout::LabelRole);
                     if (li && i < labelKeys.size()) {
