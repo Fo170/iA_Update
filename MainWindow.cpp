@@ -743,24 +743,35 @@ void MainWindow::repair_selected(const QList<AppItem*>& selected) {
 }
 
 void MainWindow::repair_incorrect_install() {
-    // Réparation des installations suspectes : installé mais PAS référencé
-    // dans le PATH (mauvaise installation, vestige, etc.) ou installé avec
-    // une version inconnue. L'utilisateur choisit lesquelles réparer.
-    QList<AppItem*> suspicious;
-    QStringList names;
+    // Priorité 1 : réparer les applications cochées par l'utilisateur.
+    QList<AppItem*> selected;
     for (int row = 0; row < apps_.size(); ++row) {
-        AppItem& app = apps_[row];
-        bool suspect = app.installed &&
-                       ((!app.referenced_in_path && !app.detectCommands().isEmpty()) ||
-                        app.local_version.isEmpty() && !app.versionLocalRegex.isEmpty() &&
-                            app.versionLocalRegistry.isEmpty());
-        if (suspect) {
-            suspicious.append(&app);
-            names << app.name;
+        if (apps_[row].is_selected)
+            selected.append(&apps_[row]);
+    }
+
+    QStringList names;
+    for (auto* app : selected)
+        names << app->name;
+
+    // Priorité 2 : si rien n'est coché, détection automatique des
+    // installations suspectes (installé mais PAS référencé dans le PATH,
+    // mauvais emplacement, vestige, ou version locale inconnue).
+    if (selected.isEmpty()) {
+        for (int row = 0; row < apps_.size(); ++row) {
+            AppItem& app = apps_[row];
+            bool suspect = app.installed &&
+                           ((!app.referenced_in_path && !app.detectCommands().isEmpty()) ||
+                            app.local_version.isEmpty() && !app.versionLocalRegex.isEmpty() &&
+                                app.versionLocalRegistry.isEmpty());
+            if (suspect) {
+                selected.append(&app);
+                names << app.name;
+            }
         }
     }
 
-    if (suspicious.isEmpty()) {
+    if (selected.isEmpty()) {
         set_status_message(langue_->get("status.no_repair_needed"));
         return;
     }
@@ -776,11 +787,11 @@ void MainWindow::repair_incorrect_install() {
     if (mb.exec() != QMessageBox::Yes)
         return;
 
-    for (auto* app : suspicious)
+    for (auto* app : selected)
         app->is_selected = true;
 
     set_status_message(langue_->get("status.repairing"));
-    installer_->repair(suspicious);
+    installer_->repair(selected);
 }
 
 void MainWindow::download_selected(const QList<AppItem*>& selected) {
