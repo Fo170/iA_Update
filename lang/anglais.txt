@@ -29,6 +29,12 @@ status.error_writing=Unable to write file.
 filter.all=All
 filter.search=Search...
 
+tab.all=All
+tab.outils=🔧 Tools & Runtimes
+tab.local=🧠 Local — models
+tab.assistants=🤖 Chat assistants
+tab.code=💻 Coding AI
+
 col.name=Name
 col.local=Local version
 col.online=Online version
@@ -54,8 +60,14 @@ path.no=No
 phase2.download=📥 Download
 phase2.command=📄 Create command file
 phase2.install=⚙️ Install automatically
+phase2.repair=🔧 Repair
 phase2.apply=Apply actions
-phase2.apply.tip=Download / create script / install for selected applications
+phase2.apply.tip=Download / create script / install / repair for selected applications
+phase2.repair_incorrect=🔧 Repair incorrect installations
+phase2.repair_incorrect.tip=Detects and repairs suspicious installations (wrong location, leftovers, missing PATH)
+
+status.repairing=Repairing...
+status.no_repair_needed=No installation to repair.
 
 dialog.download_dir=Choose download folder
 dialog.command_file=Save command file
@@ -63,6 +75,10 @@ dialog.install.title=Automatic installation
 dialog.install.confirm=The selected applications will be updated automatically.\n\nThis operation requires administrator rights.\n\nContinue?
 dialog.install.yes=Install
 dialog.install.no=Cancel
+
+dialog.repair.title=Repair
+dialog.repair.confirm=The selected applications will be repaired (reinstall, relocation, leftover cleanup).\n\nThis operation requires administrator rights.\n\nContinue?
+dialog.repair.incorrect=The following installations seem incorrect (wrong location, leftovers, missing PATH). Repair?
 
 dialog.about.title=ℹ️ About
 dialog.about.text=<h3>%1</h3><p>Version %2</p><p>Installation and update checker for AI applications and development tools.</p><p>Qt6 cross-platform.</p>

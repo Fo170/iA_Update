@@ -29,6 +29,12 @@ status.error_writing=Impossible d'écrire le fichier.
 filter.all=Tous
 filter.search=Rechercher...
 
+tab.all=Tous
+tab.outils=🔧 Outils & Runtimes
+tab.local=🧠 Local — modèles
+tab.assistants=🤖 Assistants chat
+tab.code=💻 IA de code
+
 col.name=Nom
 col.local=Version locale
 col.online=Version en ligne
@@ -54,8 +60,14 @@ path.no=Non
 phase2.download=📥 Télécharger
 phase2.command=📄 Créer fichier commande
 phase2.install=⚙️ Installer automatiquement
+phase2.repair=🔧 Réparer
 phase2.apply=Exécuter les actions
-phase2.apply.tip=Télécharger / créer le script / installer pour les applications sélectionnées
+phase2.apply.tip=Télécharger / créer le script / installer / réparer pour les applications sélectionnées
+phase2.repair_incorrect=🔧 Réparer installations incorrectes
+phase2.repair_incorrect.tip=Détecte et répare les installations suspectes (mauvais emplacement, vestiges, PATH manquant)
+
+status.repairing=Réparation en cours...
+status.no_repair_needed=Aucune installation à réparer.
 
 dialog.download_dir=Choisir le dossier de téléchargement
 dialog.command_file=Enregistrer le fichier de commande
@@ -63,6 +75,10 @@ dialog.install.title=Installation automatique
 dialog.install.confirm=Les applications sélectionnées vont être mises à jour automatiquement.\n\nCette opération nécessite des droits administrateur.\n\nContinuer ?
 dialog.install.yes=Installer
 dialog.install.no=Annuler
+
+dialog.repair.title=Réparation
+dialog.repair.confirm=Les applications sélectionnées vont être réparées (réinstallation, remise en place, suppression des vestiges).\n\nCette opération nécessite des droits administrateur.\n\nContinuer ?
+dialog.repair.incorrect=Les installations suivantes semblent incorrectes (mauvais emplacement, vestiges, PATH manquant). Réparer ?
 
 dialog.about.title=ℹ️ À propos
 dialog.about.text=<h3>%1</h3><p>Version %2</p><p>Vérificateur d'installation et de mises à jour des applications IA et outils de développement.</p><p>Qt6 multi-plateforme.</p>

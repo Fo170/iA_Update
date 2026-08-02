@@ -117,19 +117,21 @@ void MainWindow::create_central() {
     auto* central = new QWidget(this);
     auto* layout = new QVBoxLayout(central);
 
+    // Onglets par catégorie
+    tabs_ = new QTabWidget;
+    tabs_->setDocumentMode(true);
+    layout->addWidget(tabs_);
+
     // Barre de filtres
     auto* filter_bar = new QHBoxLayout;
 
     filter_status_ = new QComboBox;
     filter_status_->addItem(QString(), QString());
-    filter_category_ = new QComboBox;
-    filter_category_->addItem(QString(), QString());
     search_box_ = new QLineEdit;
     search_box_->setClearButtonEnabled(true);
     search_box_->setPlaceholderText(QString());
 
     filter_bar->addWidget(filter_status_);
-    filter_bar->addWidget(filter_category_);
     filter_bar->addWidget(search_box_, 1);
 
     // Bouton de sélection
@@ -141,8 +143,6 @@ void MainWindow::create_central() {
     layout->addLayout(filter_bar);
 
     connect(filter_status_, &QComboBox::currentIndexChanged,
-            this, &MainWindow::filter_changed);
-    connect(filter_category_, &QComboBox::currentIndexChanged,
             this, &MainWindow::filter_changed);
     connect(search_box_, &QLineEdit::textChanged,
             this, &MainWindow::filter_changed);
@@ -181,12 +181,16 @@ void MainWindow::create_central() {
     cb_download_ = new QCheckBox;
     cb_command_ = new QCheckBox;
     cb_install_ = new QCheckBox;
+    cb_repair_ = new QCheckBox;
     btn_actions_ = new QPushButton;
+    btn_repair_ = new QPushButton;
 
     p2->addWidget(cb_download_);
     p2->addWidget(cb_command_);
     p2->addWidget(cb_install_);
+    p2->addWidget(cb_repair_);
     p2->addStretch(1);
+    p2->addWidget(btn_repair_);
     p2->addWidget(btn_actions_);
 
     layout->addWidget(phase2);
@@ -194,7 +198,9 @@ void MainWindow::create_central() {
     connect(cb_download_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
     connect(cb_command_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
     connect(cb_install_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
+    connect(cb_repair_, &QCheckBox::checkStateChanged, this, &MainWindow::selection_changed);
     connect(btn_actions_, &QPushButton::clicked, this, &MainWindow::apply_action_phase2);
+    connect(btn_repair_, &QPushButton::clicked, this, &MainWindow::repair_incorrect_install);
 
     status_label_ = new QLabel;
     statusBar()->addWidget(status_label_, 1);
@@ -293,8 +299,10 @@ void MainWindow::apply_filter() {
 
     int stIdx = filter_status_->currentIndex();
     QString stData = filter_status_->itemData(stIdx).toString();
-    int catIdx = filter_category_->currentIndex();
-    QString catData = filter_category_->itemData(catIdx).toString();
+    QString catData = tabs_ ? tabs_->currentIndex() > 0
+                                ? tabs_->widget(tabs_->currentIndex())->objectName()
+                                : QString()
+                            : QString();
     QString search = search_box_->text().toLower();
 
     for (int row = 0; row < apps_.size(); ++row) {
@@ -312,6 +320,33 @@ void MainWindow::apply_filter() {
 
         table_->setRowHidden(row, !show);
     }
+}
+
+void MainWindow::rebuild_tabs() {
+    if (!tabs_) return;
+
+    // Sauvegarde de la catégorie courante
+    QString current = tabs_->currentIndex() > 0
+        ? tabs_->widget(tabs_->currentIndex())->objectName() : QString();
+
+    while (tabs_->count() > 0)
+        tabs_->removeTab(0);
+
+    auto* allTab = new QWidget;
+    tabs_->addTab(allTab, langue_->get("tab.all"));
+    QStringList cats = {"outils", "local", "assistants", "code"};
+    int restore = 0;
+    for (const QString& c : cats) {
+        auto* page = new QWidget;
+        page->setObjectName(c);
+        tabs_->addTab(page, langue_->get("tab." + c));
+        int idx = tabs_->count() - 1;
+        if (c == current)
+            restore = idx;
+    }
+    tabs_->setCurrentIndex(restore);
+    connect(tabs_, &QTabWidget::currentChanged, this, &MainWindow::filter_changed,
+            Qt::UniqueConnection);
 }
 
 void MainWindow::analyze_all() {
@@ -339,19 +374,8 @@ void MainWindow::analyze_all() {
         progress_bar_->setValue(i + 1);
     }
 
-    // Remplissage des filtres de catégorie
-    QStringList cats;
-    QStringList stDataKeys;
-    filter_category_->blockSignals(true);
-    filter_category_->clear();
-    filter_category_->addItem(langue_->get("filter.all"), QString());
-    for (const auto& app : apps_) {
-        if (!cats.contains(app.category)) {
-            cats << app.category;
-            filter_category_->addItem(app.category, app.category);
-        }
-    }
-    filter_category_->blockSignals(false);
+    // Remplissage des onglets par catégorie
+    rebuild_tabs();
 
     filter_status_->blockSignals(true);
     filter_status_->clear();
@@ -430,7 +454,7 @@ void MainWindow::selection_changed() {
             apps_[row].is_selected = (ck->checkState() == Qt::Checked);
     }
     btn_actions_->setEnabled(cb_download_->isChecked() || cb_command_->isChecked() ||
-                             cb_install_->isChecked());
+                             cb_install_->isChecked() || cb_repair_->isChecked());
 }
 
 void MainWindow::select_all_outdated() {
@@ -462,6 +486,65 @@ void MainWindow::apply_action_phase2() {
         create_command_file(selected);
     if (cb_install_->isChecked())
         install_selected(selected);
+    if (cb_repair_->isChecked())
+        repair_selected(selected);
+}
+
+void MainWindow::repair_selected(const QList<AppItem*>& selected) {
+    // Confirmation
+    QMessageBox mb(this);
+    mb.setWindowTitle(langue_->get("dialog.repair.title"));
+    mb.setText(langue_->get("dialog.repair.confirm"));
+    mb.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    mb.button(QMessageBox::Yes)->setText(langue_->get("dialog.install.yes"));
+    mb.button(QMessageBox::No)->setText(langue_->get("dialog.install.no"));
+    mb.setDefaultButton(QMessageBox::No);
+
+    if (mb.exec() != QMessageBox::Yes)
+        return;
+    set_status_message(langue_->get("status.repairing"));
+    installer_->repair(selected);
+}
+
+void MainWindow::repair_incorrect_install() {
+    // Réparation des installations suspectes : installé mais PAS référencé
+    // dans le PATH (mauvaise installation, vestige, etc.) ou installé avec
+    // une version inconnue. L'utilisateur choisit lesquelles réparer.
+    QList<AppItem*> suspicious;
+    QStringList names;
+    for (int row = 0; row < apps_.size(); ++row) {
+        AppItem& app = apps_[row];
+        bool suspect = app.installed &&
+                       ((!app.referenced_in_path && !app.detectCommands().isEmpty()) ||
+                        app.local_version.isEmpty() && !app.versionLocalRegex.isEmpty() &&
+                            app.versionLocalRegistry.isEmpty());
+        if (suspect) {
+            suspicious.append(&app);
+            names << app.name;
+        }
+    }
+
+    if (suspicious.isEmpty()) {
+        set_status_message(langue_->get("status.no_repair_needed"));
+        return;
+    }
+
+    QMessageBox mb(this);
+    mb.setWindowTitle(langue_->get("dialog.repair.title"));
+    mb.setText(langue_->get("dialog.repair.incorrect") + "\n\n" + names.join("\n"));
+    mb.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    mb.button(QMessageBox::Yes)->setText(langue_->get("dialog.install.yes"));
+    mb.button(QMessageBox::No)->setText(langue_->get("dialog.install.no"));
+    mb.setDefaultButton(QMessageBox::No);
+
+    if (mb.exec() != QMessageBox::Yes)
+        return;
+
+    for (auto* app : suspicious)
+        app->is_selected = true;
+
+    set_status_message(langue_->get("status.repairing"));
+    installer_->repair(suspicious);
 }
 
 void MainWindow::download_selected(const QList<AppItem*>& selected) {
@@ -597,16 +680,30 @@ void MainWindow::retranslateUi() {
         }
         filter_status_->setCurrentIndex(idx);
     }
-    if (filter_category_ && filter_category_->count() > 0)
-        filter_category_->setItemText(0, langue_->get("filter.all"));
     search_box_->setPlaceholderText(langue_->get("filter.search"));
+
+    // Onglets
+    if (tabs_ && tabs_->count() > 0) {
+        int currentCat = tabs_->currentIndex();
+        for (int i = 0; i < tabs_->count(); ++i) {
+            QString cat = tabs_->widget(i)->objectName();
+            if (cat.isEmpty())
+                tabs_->setTabText(i, langue_->get("tab.all"));
+            else
+                tabs_->setTabText(i, langue_->get("tab." + cat));
+        }
+        tabs_->setCurrentIndex(currentCat);
+    }
 
     // Phase 2
     cb_download_->setText(langue_->get("phase2.download"));
     cb_command_->setText(langue_->get("phase2.command"));
     cb_install_->setText(langue_->get("phase2.install"));
+    cb_repair_->setText(langue_->get("phase2.repair"));
     btn_actions_->setText(langue_->get("phase2.apply"));
     btn_actions_->setToolTip(langue_->get("phase2.apply.tip"));
+    btn_repair_->setText(langue_->get("phase2.repair_incorrect"));
+    btn_repair_->setToolTip(langue_->get("phase2.repair_incorrect.tip"));
 
     // En-têtes si le modèle existe
     if (model_ && model_->columnCount() == COL_COUNT) {

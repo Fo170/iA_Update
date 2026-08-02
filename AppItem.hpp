@@ -42,7 +42,10 @@ public:
     QJsonObject detect;
     QJsonObject online;
     QJsonObject updateCommand;
-    QString versionLocalRegex;
+    QJsonObject repairCommand;
+    QString versionLocalRegex;      // regex appliquée à la sortie de la commande
+    QString versionLocalRegistry;   // sous-chaîne du DisplayName (registre Windows)
+    QString versionLocalFromPath;   // regex appliquée au chemin d'installation
 
     // ── Champs résultats (analyse) ────────────────────────────────
     bool installed = false;
@@ -64,10 +67,14 @@ public:
 
     // Retourne la liste des commandes de détection pour l'OS courant
     QStringList detectCommands() const;
+    // Retourne la commande de localisation PATH (detect.locate) si définie
+    QStringList detectLocateCommand() const;
     // Retourne la liste des chemins de détection pour l'OS courant
     QStringList detectPaths() const;
     // Retourne la commande de mise à jour pour l'OS courant
     QString updateCommandForOS() const;
+    // Retourne la commande de réparation pour l'OS courant
+    QString repairCommandForOS() const;
 };
 
 #endif

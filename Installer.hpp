@@ -16,6 +16,9 @@ public:
     explicit Installer(QObject* parent = nullptr);
 
     void install(const QList<AppItem*>& items);
+    // Réparation : exécute la repairCommand pour les apps sélectionnées
+    // (réinstallation, suppression de vestiges, remise en place, etc.)
+    void repair(const QList<AppItem*>& items);
 
 signals:
     void installStarted(const QString& appId);
@@ -31,6 +34,7 @@ private:
     QString currentAppId_;
     QString currentOutput_;
     int remaining_ = 0;
+    bool repairMode_ = false;
     void startNext();
 };
 

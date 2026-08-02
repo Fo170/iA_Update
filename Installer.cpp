@@ -9,6 +9,7 @@ Installer::Installer(QObject* parent) : QObject(parent) {
 }
 
 void Installer::install(const QList<AppItem*>& items) {
+    repairMode_ = false;
     queue_ = items;
     remaining_ = 0;
     for (auto* item : queue_) {
@@ -23,10 +24,27 @@ void Installer::install(const QList<AppItem*>& items) {
     startNext();
 }
 
+void Installer::repair(const QList<AppItem*>& items) {
+    repairMode_ = true;
+    queue_ = items;
+    remaining_ = 0;
+    for (auto* item : queue_) {
+        if (!item->repairCommandForOS().isEmpty())
+            remaining_++;
+    }
+
+    if (remaining_ == 0) {
+        emit allInstalled();
+        return;
+    }
+    startNext();
+}
+
 void Installer::startNext() {
     while (!queue_.isEmpty()) {
         AppItem* item = queue_.takeFirst();
-        QString cmd = item->updateCommandForOS();
+        QString cmd = repairMode_ ? item->repairCommandForOS()
+                                  : item->updateCommandForOS();
         if (cmd.isEmpty())
             continue;
 

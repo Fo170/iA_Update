@@ -47,7 +47,11 @@ AppItem AppItem::fromJson(const QJsonObject& obj) {
     item.detect = obj.value("detect").toObject();
     item.online = obj.value("online").toObject();
     item.updateCommand = obj.value("updateCommand").toObject();
-    item.versionLocalRegex = obj.value("versionLocal").toObject().value("regex").toString();
+    item.repairCommand = obj.value("repairCommand").toObject();
+    QJsonObject vl = obj.value("versionLocal").toObject();
+    item.versionLocalRegex = vl.value("regex").toString();
+    item.versionLocalRegistry = vl.value("registry").toString();
+    item.versionLocalFromPath = vl.value("fromPath").toString();
     return item;
 }
 
@@ -62,8 +66,11 @@ QJsonObject AppItem::toJson() const {
     obj["detect"] = detect;
     obj["online"] = online;
     obj["updateCommand"] = updateCommand;
+    obj["repairCommand"] = repairCommand;
     QJsonObject v;
     v["regex"] = versionLocalRegex;
+    v["registry"] = versionLocalRegistry;
+    v["fromPath"] = versionLocalFromPath;
     obj["versionLocal"] = v;
     return obj;
 }
@@ -79,6 +86,24 @@ QStringList AppItem::detectCommands() const {
         QString s = cmdVal.toString();
         if (!s.isEmpty())
             out << s;
+    }
+    return out;
+}
+
+QStringList AppItem::detectLocateCommand() const {
+    QStringList out;
+    QString key = QSysInfo::productType() == "windows" ? "windows" : "linux";
+    QJsonValue cmdVal = detect.value(key).toObject().value("locate");
+    if (cmdVal.isString()) {
+        QString s = cmdVal.toString();
+        if (!s.isEmpty())
+            out << s;
+    } else if (cmdVal.isArray()) {
+        for (const auto& v : cmdVal.toArray()) {
+            QString s = v.toString();
+            if (!s.isEmpty())
+                out << s;
+        }
     }
     return out;
 }
@@ -107,6 +132,11 @@ QStringList AppItem::detectPaths() const {
 QString AppItem::updateCommandForOS() const {
     QString key = QSysInfo::productType() == "windows" ? "windows" : "linux";
     return updateCommand.value(key).toString();
+}
+
+QString AppItem::repairCommandForOS() const {
+    QString key = QSysInfo::productType() == "windows" ? "windows" : "linux";
+    return repairCommand.value(key).toString();
 }
 
 void AppItem::computeStatus() {

@@ -15,6 +15,7 @@ class QComboBox;
 class QLineEdit;
 class QPushButton;
 class QCheckBox;
+class QTabWidget;
 class LangueManager;
 class AppDetector;
 class VersionChecker;
@@ -39,6 +40,8 @@ private slots:
     void download_selected(const QList<AppItem*>& selected);
     void create_command_file(const QList<AppItem*>& selected);
     void install_selected(const QList<AppItem*>& selected);
+    void repair_selected(const QList<AppItem*>& selected);
+    void repair_incorrect_install();
     void filter_changed();
     void on_app_checked(const QString& appId);
     void on_all_checked();
@@ -61,6 +64,7 @@ private:
     void update_row(int row);
     void update_table_all();
     void apply_filter();
+    void rebuild_tabs();
     void set_status_message(const QString& msg);
 
     // Composants
@@ -80,12 +84,14 @@ private:
     QLabel* status_label_ = nullptr;
     QProgressBar* progress_bar_ = nullptr;
     QComboBox* filter_status_ = nullptr;
-    QComboBox* filter_category_ = nullptr;
+    QTabWidget* tabs_ = nullptr;
     QLineEdit* search_box_ = nullptr;
     QCheckBox* cb_download_ = nullptr;
     QCheckBox* cb_command_ = nullptr;
     QCheckBox* cb_install_ = nullptr;
+    QCheckBox* cb_repair_ = nullptr;
     QPushButton* btn_actions_ = nullptr;
+    QPushButton* btn_repair_ = nullptr;
 
     // Menus
     QMenu* menu_fichier_ = nullptr;
