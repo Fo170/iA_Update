@@ -37,6 +37,8 @@ bool LangueManager::load(const QString& languageCode) {
 
         QString key = line.left(sep).trimmed();
         QString value = line.mid(sep + 1).trimmed();
+        // Convertit les séquences \n du fichier en vrais sauts de ligne
+        value.replace(QStringLiteral("\\n"), QStringLiteral("\n"));
         newTranslations[key] = value;
     }
 

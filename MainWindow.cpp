@@ -249,7 +249,7 @@ void MainWindow::create_central() {
     table_->horizontalHeader()->setStretchLastSection(false);
     table_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     table_->horizontalHeader()->setMinimumSectionSize(40);
-    table_->horizontalHeader()->setMaximumSectionSize(320);
+    table_->horizontalHeader()->setMaximumSectionSize(900);
     // La colonne Chemin absorbe l'espace restant de la fenêtre
     table_->horizontalHeader()->setSectionResizeMode(COL_PATH, QHeaderView::Stretch);
     // Hauteur des lignes adaptée au texte multiligne (retour à la ligne)
