@@ -63,7 +63,11 @@ QString VersionChecker::parseVersion(const AppItem& item, const QByteArray& data
             if (!arr.isEmpty())
                 tag = arr.first().toObject().value("name").toString();
         }
-        return tag.remove(0, 1); // retire le 'v' préfixe
+        // Retire le préfixe 'v' s'il existe (ex: "v1.2.3" -> "1.2.3"),
+        // mais conserve le tag tel quel sinon (ex: "2.7.3").
+        if (tag.startsWith('v', Qt::CaseInsensitive))
+            tag.remove(0, 1);
+        return tag;
     }
     if (type == "npm") {
         // {"version":"1.2.3", ...}
