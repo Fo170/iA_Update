@@ -102,6 +102,7 @@ void Downloader::onDownloadFinished(QNetworkReply* reply) {
         if (err.error == QJsonParseError::NoError && doc.isObject()) {
             QJsonArray assets = doc.object().value("assets").toArray();
             QString assetUrl;
+            QString assetName;
             // Préférence d'extension pour Windows
             for (const QString& ext : {QStringLiteral(".exe"), QStringLiteral(".msi"),
                                        QStringLiteral(".zip"), QStringLiteral(".7z")}) {
@@ -110,6 +111,7 @@ void Downloader::onDownloadFinished(QNetworkReply* reply) {
                     if (name.endsWith(ext, Qt::CaseInsensitive) &&
                         !name.contains("debug", Qt::CaseInsensitive)) {
                         assetUrl = a.toObject().value("browser_download_url").toString();
+                        assetName = name;
                         break;
                     }
                 }
@@ -117,17 +119,20 @@ void Downloader::onDownloadFinished(QNetworkReply* reply) {
                     break;
             }
             // Si aucun asset trouvé, on garde la page de téléchargement du manifeste
-            if (assetUrl.isEmpty()) {
-                assetUrl = QString();
-            }
             if (!assetUrl.isEmpty()) {
+                // Utilise le nom réel de l'asset (conserve l'extension correcte)
+                QString finalPath = destPath;
+                if (!assetName.isEmpty()) {
+                    QFileInfo di(destPath);
+                    finalPath = di.absolutePath() + "/" + assetName;
+                }
                 QNetworkRequest request{QUrl(assetUrl)};
                 request.setHeader(QNetworkRequest::UserAgentHeader,
                     QStringLiteral(APP_NAME "/%1").arg(QStringLiteral(APP_VERSION)));
                 request.setTransferTimeout(120000);
                 QNetworkReply* r2 = manager_->get(request);
                 r2->setProperty("appId", appId);
-                r2->setProperty("destPath", destPath);
+                r2->setProperty("destPath", finalPath);
                 r2->setProperty("step", QStringLiteral("asset"));
                 pending_++;
                 if (pending_ == 0)
@@ -143,11 +148,28 @@ void Downloader::onDownloadFinished(QNetworkReply* reply) {
 
     // Étape finale (asset GitHub ou téléchargement direct)
     bool success = false;
-    QFile f(destPath);
-    if (f.open(QIODevice::WriteOnly)) {
-        f.write(data);
-        f.close();
-        success = true;
+
+    // Détecte un téléchargement de page HTML (lien pointant vers une page
+    // web au lieu d'un fichier binaire) : on ne sauvegarde pas de fichier
+    // corrompu dans ce cas.
+    QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+    bool looksHtml = contentType.contains("text/html", Qt::CaseInsensitive) ||
+                     (!contentType.isEmpty() && contentType.contains("html", Qt::CaseInsensitive));
+    if (step != QStringLiteral("direct") || !looksHtml) {
+        QFile f(destPath);
+        if (f.open(QIODevice::WriteOnly)) {
+            f.write(data);
+            f.close();
+            success = true;
+        }
+    } else {
+        // Page web : on enregistre quand même le fichier pour permettre à
+        // l'utilisateur de voir ce qui s'est passé, mais on le marque échec.
+        QFile f(destPath + QStringLiteral(".html"));
+        if (f.open(QIODevice::WriteOnly)) {
+            f.write(data);
+            f.close();
+        }
     }
 
     emit downloadFinished(appId, success, destPath);

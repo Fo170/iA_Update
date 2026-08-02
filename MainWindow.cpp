@@ -49,6 +49,7 @@
 #include <QFormLayout>
 #include <QFontMetrics>
 #include <QResizeEvent>
+#include <QStandardPaths>
 
 // Colonnes du tableau
 enum {
@@ -796,9 +797,12 @@ void MainWindow::repair_incorrect_install() {
 }
 
 void MainWindow::download_selected(const QList<AppItem*>& selected) {
+    // Dossier par défaut : le dossier Téléchargements de l'OS
+    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    if (defaultDir.isEmpty())
+        defaultDir = QCoreApplication::applicationDirPath() + "/download";
     QString destDir = QFileDialog::getExistingDirectory(
-        this, langue_->get("dialog.download_dir"),
-        QCoreApplication::applicationDirPath() + "/download");
+        this, langue_->get("dialog.download_dir"), defaultDir);
     if (destDir.isEmpty())
         return;
     set_status_message(langue_->get("status.downloading"));
