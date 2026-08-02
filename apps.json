@@ -372,6 +372,7 @@
                 "windows": {
                     "cmd": [],
                     "paths": [
+                        "%LOCALAPPDATA%/Microsoft/WinGet/Packages/KDE.ghostwriter_*/ghostwriter.exe",
                         "C:/ghostwriter_*/ghostwriter.exe",
                         "C:/Program Files/Ghostwriter/ghostwriter.exe"
                     ]
@@ -383,15 +384,16 @@
                 }
             },
             "versionLocal": {
-                "fromPath": "ghostwriter_(\\d+\\.\\d+\\.\\d+)"
+                "fromPath": "ghostwriter_(\\d+\\.\\d+\\.\\d+)",
+                "registry": "ghostwriter"
             },
             "online": {
                 "type": "github",
-                "repo": "wereturtle/ghostwriter"
+                "repo": "KDE/ghostwriter"
             },
             "downloadUrl": "https://ghostwriter.kde.org/fr/download/",
             "updateCommand": {
-                "windows": "winget upgrade --id KDE.ghostwriter",
+                "windows": "winget install --id KDE.ghostwriter --force",
                 "linux": "sudo apt update && sudo apt upgrade ghostwriter"
             },
             "repairCommand": {
